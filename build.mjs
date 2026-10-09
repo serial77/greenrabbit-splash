@@ -44,7 +44,26 @@ const ICONS = {
   clock: `<svg viewBox="0 0 24 24" ${STROKE} aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>`,
   arrow: `<svg viewBox="0 0 24 24" ${STROKE} aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>`,
   map: `<svg viewBox="0 0 24 24" ${STROKE} aria-hidden="true"><path d="m9 4-6 2v14l6-2 6 2 6-2V4l-6 2-6-2Z"/><path d="M9 4v14M15 6v14"/></svg>`,
+  heart: `<svg viewBox="0 0 24 24" ${STROKE} aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10.2A4.1 4.1 0 0 1 12 7.4a4.1 4.1 0 0 1 7.5 2.4C19.5 15.4 12 20 12 20Z"/></svg>`,
+  sprout: `<svg viewBox="0 0 24 24" ${STROKE} aria-hidden="true"><path d="M12 21v-9"/><path d="M12 12C12 8 9 5 5 5c0 4 3 7 7 7Z"/><path d="M12 14.5c0-3.3 2.7-6 6-6 0 3.3-2.7 6-6 6Z"/></svg>`,
+  home: `<svg viewBox="0 0 24 24" ${STROKE} aria-hidden="true"><path d="M3.5 11 12 4l8.5 7"/><path d="M6 9.5V20h12V9.5"/><path d="M10 20v-5h4v5"/></svg>`,
+  key: `<svg viewBox="0 0 24 24" ${STROKE} aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="m10.9 12.1 8.6-8.6"/><path d="m16.5 6.5 2.5 2.5M14 9l2 2"/></svg>`,
+  idcard: `<svg viewBox="0 0 24 24" ${STROKE} aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M5.8 16.2c.6-1.4 1.8-2.2 3.2-2.2s2.6.8 3.2 2.2M14.5 10h4M14.5 13.5h3"/></svg>`,
+  referral: `<svg viewBox="0 0 24 24" ${STROKE} aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c.8-3.3 3.2-5.2 6-5.2s5.2 1.9 6 5.2"/><path d="M18.5 8v6M15.5 11h6"/></svg>`,
+  approved: `<svg viewBox="0 0 24 24" ${STROKE} aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8.4 12.3 2.5 2.5 4.8-5"/></svg>`,
+  age: `<svg viewBox="0 0 24 24" ${STROKE} aria-hidden="true"><circle cx="12" cy="12" r="9"/><text x="12" y="15.4" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="9" font-weight="600" fill="currentColor" stroke="none">18</text></svg>`,
+  document: `<svg viewBox="0 0 24 24" ${STROKE} aria-hidden="true"><path d="M6.5 3h8l4 4v14h-12Z"/><path d="M14.5 3v4h4M9.5 12h6M9.5 15h6M9.5 18h3.5"/></svg>`,
+  no: `<svg viewBox="0 0 24 24" ${STROKE} aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M5.7 5.7l12.6 12.6"/></svg>`,
+  scale: `<svg viewBox="0 0 24 24" ${STROKE} aria-hidden="true"><path d="M12 4v16M8 20h8M5 7h14M12 4l0 3"/><path d="M2.5 14a2.5 2.5 0 0 0 5 0L5 7.5Z"/><path d="M16.5 14a2.5 2.5 0 0 0 5 0L19 7.5Z"/></svg>`,
+  people: `<svg viewBox="0 0 24 24" ${STROKE} aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3.5 19c.7-3 2.9-4.8 5.5-4.8s4.8 1.8 5.5 4.8"/><path d="M15.8 5.3a3 3 0 0 1 0 5.4M17.6 14.5c1.6.7 2.5 2.2 2.9 4.5"/></svg>`,
+  shield: `<svg viewBox="0 0 24 24" ${STROKE} aria-hidden="true"><path d="M12 3 5 6v5.2c0 4.4 2.9 8 7 9.8 4.1-1.8 7-5.4 7-9.8V6Z"/><path d="M12 8.5v4M12 15.5v.3"/></svg>`,
+  lock: `<svg viewBox="0 0 24 24" ${STROKE} aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5M12 14.5v2.5"/></svg>`,
+  car: `<svg viewBox="0 0 24 24" ${STROKE} aria-hidden="true"><path d="M4 15.5v-3.2L6 7.6A2 2 0 0 1 7.8 6.4h8.4A2 2 0 0 1 18 7.6l2 4.7v3.2"/><rect x="3" y="12.3" width="18" height="5.2" rx="1.6"/><path d="M6.5 17.5v2M17.5 17.5v2M6.5 15h1.5M16 15h1.5"/></svg>`,
+  calendar: `<svg viewBox="0 0 24 24" ${STROKE} aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8.5 3v4M15.5 3v4"/></svg>`,
+  info: `<svg viewBox="0 0 24 24" ${STROKE} aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.8v.4"/></svg>`,
+  chat: `<svg viewBox="0 0 24 24" ${STROKE} aria-hidden="true"><path d="M20 12.5a7.5 7.5 0 0 1-11 6.6L4 20l1.1-4.2A7.5 7.5 0 1 1 20 12.5Z"/><path d="M9 11h6M9 14h4"/></svg>`,
 };
+const icon = (name) => ICONS[name];
 
 /* ---------- images ---------- */
 function srcset(slug, ext) {
@@ -96,8 +115,16 @@ const T = {
     about: {
       eyebrow: 'La asociación',
       h2: 'Qué es un club social de cannabis en Calpe',
-      lead: 'Green Rabbit es una asociación privada y sin ánimo de lucro, inscrita en el Registro de Asociaciones de la Comunitat Valenciana. Reúne a personas adultas que ya son consumidoras de cannabis y que han decidido organizarse de forma responsable, privada y dentro del marco asociativo.',
-      body: 'No somos una tienda, un bar ni un coffee shop. No hay venta al público, no se atiende a visitantes de paso y no ofrecemos acceso turístico ni puntual: el local está reservado a los socios.',
+      lead: 'Green Rabbit es una asociación privada y sin ánimo de lucro, inscrita en el Registro de Asociaciones de la Comunitat Valenciana.',
+      body: 'Reúne a personas adultas que ya son consumidoras de cannabis y que han decidido organizarse de forma responsable, privada y dentro del marco asociativo.',
+      notTitle: 'Lo que no somos',
+      nots: [
+        ['no', 'No somos una tienda, un bar ni un coffee shop'],
+        ['no', 'No hay venta al público'],
+        ['no', 'Sin visitantes de paso ni acceso turístico o puntual'],
+        ['key', 'El local está reservado a los socios'],
+      ],
+      pillarIcons: ['heart', 'sprout', 'home', 'key'],
       pillars: [
         ['Sin ánimo de lucro', 'Las aportaciones de los socios se destinan únicamente a sostener la actividad de la asociación.'],
         ['Cultivo compartido', 'Un modelo de autoabastecimiento colectivo, en circuito cerrado y pensado solo para socios adultos.'],
@@ -120,7 +147,8 @@ const T = {
     membership: {
       eyebrow: 'Membresía',
       h2: 'Cómo hacerse socio del club cannábico en Calpe',
-      lead: 'La admisión es solo por referencia de un socio actual y requiere la aprobación de la asociación. No es inmediata: no hay pases de un día ni membresías temporales. El proceso tiene tres pasos:',
+      lead: 'La admisión es solo por referencia de un socio actual y requiere la aprobación de la asociación.',
+      chips: ['No es inmediata', 'Sin pases de un día', 'Sin membresías temporales'],
       steps: [
         ['Identificación', 'Para iniciar la solicitud debes identificarte con tu DNI, NIE o pasaporte en vigor. Comprobamos tu identidad y tu edad.'],
         ['Solicitud con aval de un socio', 'Rellenas la solicitud de admisión. Tu solicitud debe estar avalada por una persona que ya sea socia de la asociación.'],
@@ -128,10 +156,10 @@ const T = {
       ],
       reqTitle: 'Requisitos',
       reqs: [
-        `Tener ${AGE} años o más`,
-        'Documento de identidad válido: DNI, NIE o pasaporte',
-        'Aval de un socio actual de la asociación',
-        'Aceptar los estatutos y respetar las normas de la casa',
+        ['age', `Tener ${AGE} años o más`],
+        ['idcard', 'Documento de identidad válido: DNI, NIE o pasaporte'],
+        ['referral', 'Aval de un socio actual de la asociación'],
+        ['document', 'Aceptar los estatutos y respetar las normas de la casa'],
       ],
       contactTitle: '¿Dudas sobre la admisión?',
       contact: 'Escríbenos por WhatsApp o por correo electrónico.',
@@ -151,7 +179,11 @@ const T = {
     location: {
       eyebrow: 'Ubicación y horario',
       h2: 'Dónde estamos en Calpe',
-      lead: 'En el centro de Calp, a pocos pasos del paseo marítimo: a 10–15 minutos de Altea y Benissa, a unos 20 minutos de Moraira y a unos 25 minutos de Benidorm. Acceso exclusivo para socios.',
+      lead: 'En el centro de Calp, a pocos pasos del paseo marítimo. Acceso exclusivo para socios.',
+      byCar: 'En coche',
+      travel: [['Altea · Benissa', '10–15 min'], ['Moraira', 'unos 20 min'], ['Benidorm', 'unos 25 min']],
+      hoursSummary: 'Todos los días',
+      hoursMore: 'Ver horario por días',
       address: 'Dirección', hours: 'Horario de apertura (socios)', contact: 'Contacto',
       directions: 'Cómo llegar',
       days: 'Día', time: 'Horario',
@@ -188,6 +220,7 @@ const T = {
       legal: [['/aviso-legal/', 'Aviso legal'], ['/privacidad/', 'Política de privacidad'], ['/cookies/', 'Política de cookies']],
       rights: 'Todos los derechos reservados.',
     },
+    alt2: 'Zona de descanso con sofás e iluminación cálida (imagen ilustrativa)',
     social: { instagram: 'Green Rabbit en Instagram', tiktok: 'Green Rabbit en TikTok', whatsapp: 'Escribir por WhatsApp' },
   },
 
@@ -225,8 +258,16 @@ const T = {
     about: {
       eyebrow: 'The association',
       h2: 'What a cannabis social club in Calpe is',
-      lead: 'Green Rabbit is a private, non-profit association registered with the Associations Registry of the Valencian Community. It brings together adults who already use cannabis and have chosen to organise themselves responsibly, privately and within the legal framework for associations.',
-      body: 'We are not a shop, a bar or a coffee shop. There is no sale to the public, no walk-in service and no tourist or one-off access: the premises are for members only.',
+      lead: 'Green Rabbit is a private, non-profit association registered with the Associations Registry of the Valencian Community.',
+      body: 'It brings together adults who already use cannabis and have chosen to organise themselves responsibly, privately and within the legal framework for associations.',
+      notTitle: 'What we are not',
+      nots: [
+        ['no', 'Not a shop, a bar or a coffee shop'],
+        ['no', 'No sale to the public'],
+        ['no', 'No walk-in service and no tourist or one-off access'],
+        ['key', 'The premises are for members only'],
+      ],
+      pillarIcons: ['heart', 'sprout', 'home', 'key'],
       pillars: [
         ['Non-profit', "Members' contributions go solely towards running the association."],
         ['Shared cultivation', 'A collective, closed-circuit self-supply model intended only for adult members.'],
@@ -249,7 +290,8 @@ const T = {
     membership: {
       eyebrow: 'Membership',
       h2: 'How to join our cannabis club in Calpe',
-      lead: 'Membership is by referral from an existing member only and requires approval by the association. It is never immediate: there are no day passes and no temporary memberships. The process has three steps:',
+      lead: 'Membership is by referral from an existing member only and requires approval by the association.',
+      chips: ['Never immediate', 'No day passes', 'No temporary memberships'],
       steps: [
         ['Identification', 'To start an application you need to identify yourself with a valid DNI, NIE or passport. We check your identity and age.'],
         ['Application endorsed by a member', 'Fill in the membership application. It must be endorsed by someone who is already a member of the association.'],
@@ -257,10 +299,10 @@ const T = {
       ],
       reqTitle: 'Requirements',
       reqs: [
-        `Aged ${AGE} or over`,
-        'Valid ID: DNI, NIE or passport',
-        'Endorsement from a current member of the association',
-        'Agreement to the statutes and respect for the house rules',
+        ['age', `Aged ${AGE} or over`],
+        ['idcard', 'Valid ID: DNI, NIE or passport'],
+        ['referral', 'Endorsement from a current member of the association'],
+        ['document', 'Agreement to the statutes and respect for the house rules'],
       ],
       contactTitle: 'Questions about membership?',
       contact: 'Message us on WhatsApp or by email.',
@@ -280,7 +322,11 @@ const T = {
     location: {
       eyebrow: 'Location & hours',
       h2: 'Where to find us in Calpe',
-      lead: 'In the centre of Calp, a short walk from the seafront promenade: 10–15 minutes from Altea and Benissa, around 20 minutes from Moraira and about 25 minutes from Benidorm. Access for members only.',
+      lead: 'In the centre of Calp, a short walk from the seafront promenade. Access for members only.',
+      byCar: 'By car',
+      travel: [['Altea · Benissa', '10–15 min'], ['Moraira', 'around 20 min'], ['Benidorm', 'about 25 min']],
+      hoursSummary: 'Every day',
+      hoursMore: 'See daily hours',
       address: 'Address', hours: 'Opening hours (members)', contact: 'Contact',
       directions: 'Get directions',
       days: 'Day', time: 'Hours',
@@ -317,6 +363,7 @@ const T = {
       legal: [['/aviso-legal/', 'Legal notice (ES)'], ['/privacidad/', 'Privacy policy (ES)'], ['/cookies/', 'Cookie policy (ES)']],
       rights: 'All rights reserved.',
     },
+    alt2: 'Relaxation area with sofas and warm lighting (illustrative image)',
     social: { instagram: 'Green Rabbit on Instagram', tiktok: 'Green Rabbit on TikTok', whatsapp: 'Message us on WhatsApp' },
   },
 };
@@ -388,8 +435,8 @@ function homeSchema(t) {
 const jsonld = (obj) => `<script type="application/ld+json">${JSON.stringify(obj).replace(/</g, '\\u003c')}</script>`;
 
 /* ---------- shared chrome ---------- */
-// Must match the rendered hero image width (see .hero-grid in site.css).
-const HERO_SIZES = '(min-width: 1200px) 540px, (min-width: 960px) 45vw, calc(100vw - 2.25rem)';
+// The hero image is full-bleed at every width.
+const HERO_SIZES = '100vw';
 
 function head({ t, title, description, path, alternates, schema, preloadHero = false, noindex = false, gate = false }) {
   const url = abs(path);
@@ -544,12 +591,17 @@ function homePage(t) {
   const gallerySizes = (i) => i === 0
     ? '(min-width: 1000px) 760px, (min-width: 640px) calc(100vw - 5rem), calc(100vw - 2.25rem)'
     : '(min-width: 1000px) 380px, (min-width: 640px) 45vw, 104px';
+  const iconList = (items, cls = 'icon-list') =>
+    `<ul class="${cls}">${items.map(([ic, text]) => `<li><span class="icon-badge">${icon(ic)}</span><span>${text}</span></li>`).join('')}</ul>`;
+  const STEP_ICONS = ['idcard', 'referral', 'approved'];
+  const LAW_ICONS = ['scale', 'people', 'shield', 'lock'];
 
   const body = `<body>
 ${header(t, { onHome: true, langPaths: ['/', '/en/'] })}
 <main id="main">
 <section class="hero" aria-labelledby="hero-title">
-<div class="wrap hero-grid">
+<figure class="hero-media">${picture('lounge', { alt: h.alt, sizes: HERO_SIZES, eager: true })}<figcaption class="media-label">${t.illustrative}</figcaption></figure>
+<div class="wrap hero-inner">
 <div class="hero-content">
 <p class="eyebrow">${h.eyebrow}</p>
 <h1 id="hero-title">${h.h1}</h1>
@@ -560,30 +612,33 @@ ${header(t, { onHome: true, langPaths: ['/', '/en/'] })}
 </div>
 ${googleLink}
 </div>
-<figure class="hero-media">${picture('lounge', { alt: h.alt, sizes: HERO_SIZES, eager: true })}<figcaption class="media-label">${t.illustrative}</figcaption></figure>
 </div>
 </section>
 
 <div class="quick-info">
 <div class="wrap">
 <div class="qi-card">
-<div class="qi-item">${ICONS.pin}<div><span class="qi-label">${q.address}</span><span class="qi-value">${A.street}, ${A.localityDisplay}</span></div></div>
-<div class="qi-item">${ICONS.clock}<div><span class="qi-label">${q.hours}</span><span class="qi-value">${q.daily} · ${HOURS}</span></div></div>
+<div class="qi-item"><span class="icon-badge">${ICONS.pin}</span><div><span class="qi-label">${q.address}</span><span class="qi-value">${A.street}, ${A.localityDisplay}</span></div></div>
+<div class="qi-item"><span class="icon-badge">${ICONS.clock}</span><div><span class="qi-label">${q.hours}</span><span class="qi-value">${q.daily} · ${HOURS}</span></div></div>
 ${directionsBtn(q.directions)}
 </div>
 </div>
 </div>
 
-<section class="section" id="about" aria-labelledby="about-title">
+<section class="section section-about" id="about" aria-labelledby="about-title">
 <div class="wrap about-grid">
 <div class="about-text">
 <p class="eyebrow">${ab.eyebrow}</p>
 <h2 id="about-title">${ab.h2}</h2>
 <p class="lead">${ab.lead}</p>
 <p>${ab.body}</p>
+<div class="not-box">
+<h3>${ab.notTitle}</h3>
+${iconList(ab.nots, 'icon-list icon-list-compact')}
+</div>
 </div>
 <ul class="pillars">
-${ab.pillars.map(([title, text]) => `<li class="pillar"><h3>${title}</h3><p>${text}</p></li>`).join('\n')}
+${ab.pillars.map(([title, text], i) => `<li class="pillar"><span class="icon-badge icon-badge-lg">${icon(ab.pillarIcons[i])}</span><h3>${title}</h3><p>${text}</p></li>`).join('\n')}
 </ul>
 </div>
 </section>
@@ -598,28 +653,31 @@ ${ab.pillars.map(([title, text]) => `<li class="pillar"><h3>${title}</h3><p>${te
 <ul class="gallery">
 ${ab.space.map(([slug, title, text, alt], i) => `<li class="gallery-item${i === 0 ? ' is-feature' : ''}">${picture(slug, { alt, sizes: gallerySizes(i) })}<div><h3>${title}</h3><p>${text}</p></div></li>`).join('\n')}
 </ul>
-<p class="note gallery-note">${ab.imagesNote}</p>
+<p class="note note-icon gallery-note">${ICONS.info}<span>${ab.imagesNote}</span></p>
 </div>
 </section>
 
-<section class="section" id="membership" aria-labelledby="membership-title">
+<section class="section section-membership" id="membership" aria-labelledby="membership-title">
 <div class="wrap">
+<div class="membership-layout">
 <div class="section-head">
 <p class="eyebrow">${m.eyebrow}</p>
 <h2 id="membership-title">${m.h2}</h2>
 <p class="lead">${m.lead}</p>
+<ul class="chips">${m.chips.map((c) => `<li>${ICONS.no}${c}</li>`).join('')}</ul>
 </div>
+<figure class="membership-media">${picture('lounge-tall', { alt: t.alt2, sizes: '(min-width: 1000px) 440px, calc(100vw - 2.25rem)' })}<figcaption class="media-label">${t.illustrative}</figcaption></figure>
 <ol class="steps">
-${m.steps.map(([title, text]) => `<li class="step"><div><h3>${title}</h3><p>${text}</p></div></li>`).join('\n')}
+${m.steps.map(([title, text], i) => `<li class="step"><span class="step-icon">${icon(STEP_ICONS[i])}<span class="step-num">${i + 1}</span></span><div><h3>${title}</h3><p>${text}</p></div></li>`).join('\n')}
 </ol>
+</div>
 <div class="membership-panels">
 <div class="panel">
 <h3>${m.reqTitle}</h3>
-<ul class="check-list">
-${m.reqs.map((r) => `<li>${r}</li>`).join('\n')}
-</ul>
+${iconList(m.reqs)}
 </div>
 <div class="panel panel-stone">
+<span class="icon-badge icon-badge-lg">${ICONS.chat}</span>
 <h3>${m.contactTitle}</h3>
 <p class="muted">${m.contact}</p>
 <div class="btn-row">
@@ -631,7 +689,7 @@ ${m.reqs.map((r) => `<li>${r}</li>`).join('\n')}
 </div>
 </section>
 
-<section class="section section-stone" id="how-it-works" aria-labelledby="law-title">
+<section class="section section-stone section-law" id="how-it-works" aria-labelledby="law-title">
 <div class="wrap">
 <div class="section-head">
 <p class="eyebrow">${law.eyebrow}</p>
@@ -639,9 +697,9 @@ ${m.reqs.map((r) => `<li>${r}</li>`).join('\n')}
 <p class="lead">${law.lead}</p>
 </div>
 <ul class="law-grid">
-${law.items.map(([tag, title, text]) => `<li class="law-item"><span class="tag">${tag}</span><h3>${title}</h3><p>${text}</p></li>`).join('\n')}
+${law.items.map(([tag, title, text], i) => `<li class="law-item"><span class="icon-badge icon-badge-lg">${icon(LAW_ICONS[i])}</span><div><span class="tag">${tag}</span><h3>${title}</h3><p>${text}</p></div></li>`).join('\n')}
 </ul>
-<p class="note">${law.disclaimer}</p>
+<p class="note note-icon">${ICONS.info}<span>${law.disclaimer}</span></p>
 </div>
 </section>
 
@@ -652,30 +710,36 @@ ${law.items.map(([tag, title, text]) => `<li class="law-item"><span class="tag">
 <p class="eyebrow">${loc.eyebrow}</p>
 <h2 id="location-title">${loc.h2}</h2>
 <p class="lead">${loc.lead}</p>
+<p class="travel-label">${ICONS.car}${loc.byCar}</p>
+<ul class="chips chips-travel">${loc.travel.map(([place, time]) => `<li><strong>${place}</strong> ${time}</li>`).join('')}</ul>
 </div>
 <div class="info-block">
-<div>
+<div class="info-card">
 <h3>${loc.address}</h3>
 <address>${A.street}<br>${A.postalCode} ${A.localityDisplay}, ${A.province}<br>${A.countryName[t.lang]}</address>
 ${directionsBtn(loc.directions)}
 </div>
-<div>
+<div class="info-card">
 <h3>${loc.hours}</h3>
+<p class="hours-summary"><span class="icon-badge">${ICONS.calendar}</span><span><span class="qi-label">${loc.hoursSummary}</span><span class="hours-big">${HOURS}</span></span></p>
+<details class="hours-more">
+<summary>${loc.hoursMore}</summary>
 <table class="hours-table">
 <thead class="visually-hidden"><tr><th scope="col">${loc.days}</th><th scope="col">${loc.time}</th></tr></thead>
 <tbody>
 ${DAYS.map((d) => `<tr data-day="${d[0]}"><th scope="row">${t.lang === 'es' ? d[2] : d[3]}</th><td>${HOURS}</td></tr>`).join('\n')}
 </tbody>
 </table>
+</details>
 </div>
 <div>
 <h3>${loc.contact}</h3>
 <ul class="contact-list">
-<li><a href="tel:${CLUB.phone}">${ICONS.phone}${CLUB.phoneDisplay}</a></li>
-<li><a href="${CLUB.whatsapp}" rel="noopener" target="_blank">${ICONS.whatsapp}WhatsApp</a></li>
-<li><a href="mailto:${CLUB.email}">${ICONS.mail}${CLUB.email}</a></li>
-<li><a href="${CLUB.instagram}" rel="noopener" target="_blank">${ICONS.instagram}Instagram ${CLUB.handle}</a></li>
-<li><a href="${CLUB.tiktok}" rel="noopener" target="_blank">${ICONS.tiktok}TikTok ${CLUB.handle}</a></li>
+<li><a href="tel:${CLUB.phone}"><span class="icon-badge">${ICONS.phone}</span>${CLUB.phoneDisplay}</a></li>
+<li><a href="${CLUB.whatsapp}" rel="noopener" target="_blank"><span class="icon-badge">${ICONS.whatsapp}</span>WhatsApp</a></li>
+<li><a href="mailto:${CLUB.email}"><span class="icon-badge">${ICONS.mail}</span>${CLUB.email}</a></li>
+<li><a href="${CLUB.instagram}" rel="noopener" target="_blank"><span class="icon-badge">${ICONS.instagram}</span>Instagram ${CLUB.handle}</a></li>
+<li><a href="${CLUB.tiktok}" rel="noopener" target="_blank"><span class="icon-badge">${ICONS.tiktok}</span>TikTok ${CLUB.handle}</a></li>
 </ul>
 </div>
 </div>
@@ -693,7 +757,7 @@ ${picture('map', { alt: loc.mapAlt, sizes: '(min-width: 960px) 600px, calc(100vw
 </div>
 </section>
 
-<section class="section" id="faq" aria-labelledby="faq-title">
+<section class="section section-faq" id="faq" aria-labelledby="faq-title">
 <div class="wrap faq-grid">
 <div class="section-head">
 <p class="eyebrow">${t.faqEyebrow}</p>

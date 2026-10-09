@@ -23,6 +23,7 @@ const PHOTOS = {
   'board-games': ['887cb7ed-11df-4e8b-9c0d-8066f6021828.jpeg', [480, 800, 1200]],
   'workspace': ['b1b274e6-822b-4384-a1da-cf3b7b60f163.jpeg', [480, 800, 1200]],
   'cinema': ['bb512bd4-c975-4854-bc97-b70cff920b7b.jpeg', [480, 800, 1200]],
+  'lounge-tall': ['720e9c31-6f76-40a0-9852-1976460ed8a9.jpeg', [480, 800]],
 };
 
 // The hero (LCP) image gets slightly stronger compression to keep mobile LCP low.
@@ -34,7 +35,7 @@ async function encodeSet(slug, input, widths) {
   manifest[slug] = { ratio: meta.height / meta.width, widths };
   for (const w of widths) {
     const base = sharp(input).resize({ width: w, withoutEnlargement: true });
-    await base.clone().avif({ quality: HERO.has(slug) ? 42 : 50, effort: 6 }).toFile(join(IMG, `${slug}-${w}.avif`));
+    await base.clone().avif({ quality: HERO.has(slug) ? 38 : 50, effort: 6 }).toFile(join(IMG, `${slug}-${w}.avif`));
     await base.clone().webp({ quality: 72 }).toFile(join(IMG, `${slug}-${w}.webp`));
     await base.clone().jpeg({ quality: 76, mozjpeg: true }).toFile(join(IMG, `${slug}-${w}.jpg`));
   }
