@@ -54,33 +54,31 @@ def icon_square():
 
 
 def og_image(badge):
+    """Light 1200x630 card: ivory panel with logo + text, photo on the right."""
     W, H = 1200, 630
+    PORCELAIN, CHARCOAL, BRONZE, WARM_GRAY, BORDER = (248, 246, 241), (41, 42, 39), (128, 101, 57), (100, 92, 82), (221, 213, 199)
+    base = Image.new("RGB", (W, H), PORCELAIN)
     photo = Image.open(OG_PHOTO).convert("RGB")
-    photo = ImageOps.fit(photo, (W, H), Image.LANCZOS, centering=(0.6, 0.5))
-    # Darken towards the left so the badge and text read cleanly.
-    shade = Image.new("L", (W, 1))
-    for x in range(W):
-        t = x / W
-        shade.putpixel((x, 0), int(245 - 150 * min(1, t * 1.4)))
-    shade = shade.resize((W, H))
-    base = Image.composite(Image.new("RGB", (W, H), NAVY), photo, shade)
-
-    b = badge.resize((360, 360), Image.LANCZOS)
-    glow = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    ImageDraw.Draw(glow).ellipse((40, 115, 440, 515), fill=(21, 78, 77, 140))
-    glow = glow.filter(ImageFilter.GaussianBlur(40))
-    base.paste(glow, (0, 0), glow)
-    base.paste(b, (60, 135), b)
-
+    pw = 500
+    base.paste(ImageOps.fit(photo, (pw, H), Image.LANCZOS, centering=(0.55, 0.5)), (W - pw, 0))
     d = ImageDraw.Draw(base)
-    serif = ImageFont.truetype(os.path.join(FONTS, "cormorant-garamond/files/cormorant-garamond-latin-600-normal.woff2"), 64)
-    sans = os.path.join(ROOT, "node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2")
-    small = ImageFont.truetype(sans, 24)
-    small.set_variation_by_axes([500])
-    d.text((470, 215), "Cannabis Social Club", font=serif, fill=CREAM)
-    d.text((470, 290), "Calpe · Costa Blanca", font=serif, fill=GOLD)
-    d.line((472, 385, 552, 385), fill=GOLD, width=2)
-    d.text((470, 410), "ASOCIACIÓN PRIVADA · SOLO SOCIOS", font=small, fill=CREAM)
+    d.line((W - pw - 1, 0, W - pw - 1, H), fill=BORDER, width=2)
+    b = badge.resize((150, 150), Image.LANCZOS)
+    base.paste(b, (72, 84), b)
+    serif = ImageFont.truetype(os.path.join(FONTS, "cormorant-garamond/files/cormorant-garamond-latin-600-normal.woff2"), 60)
+    sans_path = os.path.join(ROOT, "node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2")
+    small = ImageFont.truetype(sans_path, 22)
+    small.set_variation_by_axes([600])
+    tiny = ImageFont.truetype(sans_path, 15)
+    tiny.set_variation_by_axes([500])
+    d.text((72, 282), "Cannabis Social Club", font=serif, fill=CHARCOAL)
+    d.text((72, 356), "en Calpe · Costa Blanca", font=serif, fill=BRONZE)
+    d.line((74, 460, 134, 460), fill=(194, 163, 107), width=2)
+    d.text((72, 482), "ASOCIACIÓN PRIVADA · SOLO SOCIOS", font=small, fill=WARM_GRAY)
+    label = "Imagen ilustrativa"
+    tw = d.textlength(label, font=tiny)
+    d.rounded_rectangle((W - tw - 40, H - 44, W - 14, H - 14), radius=6, fill=PORCELAIN)
+    d.text((W - tw - 27, H - 38), label, font=tiny, fill=WARM_GRAY)
     base.save(os.path.join(OUT, "og.jpg"), quality=88, optimize=True, progressive=True)
 
 
@@ -119,14 +117,15 @@ def fetch_tiles(z, left, top, W, H):
 
 
 def style_map(canvas, out, W, H):
-    # Dark style: invert luminance, then map onto navy -> leaf green.
-    g = ImageOps.invert(ImageOps.grayscale(canvas))
+    # Light stone style: soft grayscale mapped onto the site's porcelain/limestone tones.
+    g = ImageOps.grayscale(canvas)
     g = ImageOps.autocontrast(g, cutoff=1)
-    styled = ImageOps.colorize(g, black=(1, 14, 26), mid=(22, 72, 78), white=(200, 222, 205))
+    styled = ImageOps.colorize(g, black=(92, 86, 78), mid=(214, 205, 190), white=(250, 248, 243))
     d = ImageDraw.Draw(styled)
     cx, cy = W / 2, H / 2
-    d.ellipse((cx - 34, cy - 34, cx + 34, cy + 34), fill=(222, 200, 150))
-    d.ellipse((cx - 13, cy - 13, cx + 13, cy + 13), fill=NAVY)
+    d.ellipse((cx - 40, cy - 40, cx + 40, cy + 40), fill=(56, 84, 69, 60))
+    d.ellipse((cx - 22, cy - 22, cx + 22, cy + 22), fill=(56, 84, 69), outline=(255, 253, 249), width=5)
+    d.ellipse((cx - 7, cy - 7, cx + 7, cy + 7), fill=(194, 163, 107))
     styled.save(out)
 
 

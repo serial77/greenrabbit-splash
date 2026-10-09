@@ -37,7 +37,9 @@ export const CLUB = {
   handle: '@greenrabbitcalpe',
   minAge: 18,
   membershipByReferral: true,
-  googleRating: '5.0',
+  // Google rating: shown only when verified against the live Google listing
+  // (e.g. '5.0'). null shows a neutral link to the listing instead.
+  googleRating: null,
 };
 
 // Date shown as "last updated" on the legal pages (ISO yyyy-mm-dd).

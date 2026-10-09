@@ -17,17 +17,16 @@ await mkdir(FONTS, { recursive: true });
 // slug -> [source file, widths]
 const PHOTOS = {
   'hero-lounge': ['7aa671cb-591e-411f-a9c5-88228f0e0429.jpeg', [640, 960, 1280, 1600]],
-  'lounge': ['48aff171-39e5-49de-9e58-2c9bda786668.jpeg', [480, 800, 1200]],
+  'lounge': ['48aff171-39e5-49de-9e58-2c9bda786668.jpeg', [480, 800, 1200, 1448]],
   'bar': ['60f011a3-0d41-4027-8ce2-a6d03b3bdc7e.jpeg', [480, 800, 1200]],
   'games-room': ['fc5d3072-e2a3-4f1c-86a9-457812e009fc.jpeg', [480, 800, 1200]],
   'board-games': ['887cb7ed-11df-4e8b-9c0d-8066f6021828.jpeg', [480, 800, 1200]],
   'workspace': ['b1b274e6-822b-4384-a1da-cf3b7b60f163.jpeg', [480, 800, 1200]],
   'cinema': ['bb512bd4-c975-4854-bc97-b70cff920b7b.jpeg', [480, 800, 1200]],
-  'lounge-tall': ['720e9c31-6f76-40a0-9852-1976460ed8a9.jpeg', [480, 800, 1086]],
 };
 
-// Hero images sit under a dark gradient, so they tolerate stronger compression.
-const HERO = new Set(['hero-lounge', 'lounge-tall']);
+// The hero (LCP) image gets slightly stronger compression to keep mobile LCP low.
+const HERO = new Set(['lounge']);
 const manifest = {};
 
 async function encodeSet(slug, input, widths) {
@@ -67,7 +66,6 @@ await sharp(join(RAW, 'og.jpg')).jpeg({ quality: 82, mozjpeg: true }).toFile(joi
 const FONT_FILES = {
   'inter-var.woff2': '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2',
   'cormorant-500.woff2': '@fontsource/cormorant-garamond/files/cormorant-garamond-latin-500-normal.woff2',
-  'cormorant-600.woff2': '@fontsource/cormorant-garamond/files/cormorant-garamond-latin-600-normal.woff2',
 };
 for (const [name, from] of Object.entries(FONT_FILES)) {
   await copyFile(join(ROOT, 'node_modules', from), join(FONTS, name));

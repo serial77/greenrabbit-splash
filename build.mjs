@@ -50,16 +50,12 @@ const ICONS = {
 function srcset(slug, ext) {
   return IMAGES[slug].widths.map((w) => `/assets/img/${slug}-${w}.${ext} ${w}w`).join(', ');
 }
-function picture(slug, { alt, sizes, eager = false, mobile = null }) {
+function picture(slug, { alt, sizes, eager = false }) {
   const { widths, ratio } = IMAGES[slug];
   const max = widths.at(-1);
   const fallback = widths[Math.min(1, widths.length - 1)];
   const loading = eager ? 'fetchpriority="high" decoding="async"' : 'loading="lazy" decoding="async"';
-  const mobileSources = mobile
-    ? ['avif', 'webp'].map((ext) =>
-        `<source media="(max-width: 700px)" type="image/${ext}" srcset="${srcset(mobile, ext)}" sizes="100vw" width="${IMAGES[mobile].widths.at(-1)}" height="${Math.round(IMAGES[mobile].widths.at(-1) * IMAGES[mobile].ratio)}">`).join('')
-    : '';
-  return `<picture>${mobileSources}<source type="image/avif" srcset="${srcset(slug, 'avif')}" sizes="${sizes}"><source type="image/webp" srcset="${srcset(slug, 'webp')}" sizes="${sizes}"><img src="/assets/img/${slug}-${fallback}.jpg" srcset="${srcset(slug, 'jpg')}" sizes="${sizes}" width="${max}" height="${Math.round(max * ratio)}" alt="${esc(alt)}" ${loading}></picture>`;
+  return `<picture><source type="image/avif" srcset="${srcset(slug, 'avif')}" sizes="${sizes}"><source type="image/webp" srcset="${srcset(slug, 'webp')}" sizes="${sizes}"><img src="/assets/img/${slug}-${fallback}.jpg" srcset="${srcset(slug, 'jpg')}" sizes="${sizes}" width="${max}" height="${Math.round(max * ratio)}" alt="${esc(alt)}" ${loading}></picture>`;
 }
 const LOGO = (size, alt = '', eager = false) =>
   `<img src="/assets/img/logo-${size <= 52 ? 96 : size <= 96 ? 192 : 384}.webp" width="${size}" height="${size}" alt="${esc(alt)}"${eager ? '' : ' loading="lazy"'} decoding="async">`;
@@ -74,6 +70,8 @@ const T = {
     skip: 'Saltar al contenido',
     nav: [['about', 'La asociación'], ['membership', 'Membresía'], ['how-it-works', 'Cómo funciona'], ['location', 'Ubicación'], ['faq', 'FAQ']],
     navLabel: 'Navegación principal',
+    menu: 'Menú',
+    illustrative: 'Imagen ilustrativa',
     langLabel: 'Idioma',
     home: 'Inicio',
     gate: {
@@ -89,9 +87,10 @@ const T = {
       h1: 'Cannabis Social Club en Calpe',
       sub: `Asociación privada sin ánimo de lucro. Solo socios, mayores de ${AGE} años.`,
       cta1: 'Cómo hacerse socio', cta2: 'Ubicación y horario',
+      mapsLink: 'Ver la ficha en Google Maps',
       rating: 'en Google',
-      ratingLabel: `Valoración ${CLUB.googleRating.replace('.', ',')} de 5 en Google. Ver la ficha en Google Maps`,
-      alt: 'Personas conversando en una zona lounge con sofás y luz cálida (imagen ilustrativa)',
+      ratingLabel: (r) => `Valoración ${r.replace('.', ',')} de 5 en Google. Ver la ficha en Google Maps`,
+      alt: 'Zona lounge con sofás, luz cálida y pantalla de proyección (imagen ilustrativa)',
     },
     quick: { address: 'Dirección', hours: 'Horario para socios', daily: 'Todos los días', directions: 'Cómo llegar' },
     about: {
@@ -110,7 +109,7 @@ const T = {
       spaceLead: 'Un local amplio y cuidado para desconectar, trabajar con calma o compartir la tarde con otros socios.',
       imagesNote: 'Imágenes ilustrativas: no muestran el interior real del local.',
       space: [
-        ['lounge', 'Salón lounge', 'Sofás amplios, luz cálida y una gran pantalla para ver cine, deporte o simplemente charlar.', 'Zona lounge con sofás y pantalla de proyección (imagen ilustrativa)'],
+        ['hero-lounge', 'Salón lounge', 'Sofás amplios, luz cálida y una gran pantalla para ver cine, deporte o simplemente charlar.', 'Personas conversando en una zona lounge con sofás y pantalla de proyección (imagen ilustrativa)'],
         ['bar', 'Barra y rincón de café', 'Una barra con taburetes que hace de punto de encuentro del club.', 'Barra con taburetes y zona de café (imagen ilustrativa)'],
         ['games-room', 'Sala de juegos', 'Consolas, pantallas y sillones para partidas entre socios.', 'Sala de juegos con consolas y proyector (imagen ilustrativa)'],
         ['board-games', 'Juegos de mesa', 'Cartas y juegos de mesa para las tardes en grupo.', 'Grupo de personas jugando a un juego de mesa (imagen ilustrativa)'],
@@ -134,8 +133,8 @@ const T = {
         'Aval de un socio actual de la asociación',
         'Aceptar los estatutos y respetar las normas de la casa',
       ],
-      contact: '¿Dudas sobre la admisión? Escríbenos.',
-      alt: 'Zona de descanso con sofás e iluminación cálida (imagen ilustrativa)',
+      contactTitle: '¿Dudas sobre la admisión?',
+      contact: 'Escríbenos por WhatsApp o por correo electrónico.',
     },
     law: {
       eyebrow: 'Marco legal',
@@ -183,7 +182,7 @@ const T = {
     ],
     footer: {
       visit: 'Dirección', contact: 'Contacto', follow: 'Síguenos',
-      registry: `Inscrita en el ${CLUB.registry.name} con el n.º ${CLUB.registry.number}.`,
+      registry: `Inscrita en el ${CLUB.registry.name} con el <span class="nowrap">n.º ${CLUB.registry.number}</span>.`,
       daily: 'Todos los días',
       note: `Asociación privada sin ánimo de lucro. Este sitio tiene carácter informativo y no promueve ni publicita el consumo de cannabis. Acceso al local solo para socios mayores de ${AGE} años.`,
       legal: [['/aviso-legal/', 'Aviso legal'], ['/privacidad/', 'Política de privacidad'], ['/cookies/', 'Política de cookies']],
@@ -200,6 +199,8 @@ const T = {
     skip: 'Skip to content',
     nav: [['about', 'About'], ['membership', 'Membership'], ['how-it-works', 'How it works'], ['location', 'Location'], ['faq', 'FAQ']],
     navLabel: 'Main navigation',
+    menu: 'Menu',
+    illustrative: 'Illustrative image',
     langLabel: 'Language',
     home: 'Home',
     gate: {
@@ -215,9 +216,10 @@ const T = {
       h1: 'Cannabis Social Club in Calpe',
       sub: `A private, non-profit association. Members only, aged ${AGE} and over.`,
       cta1: 'How to become a member', cta2: 'Location & hours',
+      mapsLink: 'View our Google Maps listing',
       rating: 'on Google',
-      ratingLabel: `Rated ${CLUB.googleRating} out of 5 on Google. View the listing on Google Maps`,
-      alt: 'People chatting in a lounge area with sofas and warm light (illustrative image)',
+      ratingLabel: (r) => `Rated ${r} out of 5 on Google. View the listing on Google Maps`,
+      alt: 'Lounge area with sofas, warm light and a projection screen (illustrative image)',
     },
     quick: { address: 'Address', hours: 'Hours (members)', daily: 'Every day', directions: 'Get directions' },
     about: {
@@ -236,7 +238,7 @@ const T = {
       spaceLead: 'A spacious, carefully designed place to unwind, work in peace or spend the afternoon with other members.',
       imagesNote: 'Illustrative images: they do not show the actual premises.',
       space: [
-        ['lounge', 'Lounge', 'Deep sofas, warm light and a big screen for films, sport or simply talking.', 'Lounge area with sofas and a projection screen (illustrative image)'],
+        ['hero-lounge', 'Lounge', 'Deep sofas, warm light and a big screen for films, sport or simply talking.', 'People chatting in a lounge area with sofas and a projection screen (illustrative image)'],
         ['bar', 'Bar & coffee corner', "A counter with stools that's the club's natural meeting point.", 'Bar counter with stools and a coffee area (illustrative image)'],
         ['games-room', 'Games room', 'Consoles, screens and armchairs for games between members.', 'Games room with consoles and a projector (illustrative image)'],
         ['board-games', 'Board games', 'Cards and board games for afternoons in good company.', 'Group of people playing a board game (illustrative image)'],
@@ -260,8 +262,8 @@ const T = {
         'Endorsement from a current member of the association',
         'Agreement to the statutes and respect for the house rules',
       ],
-      contact: 'Questions about membership? Get in touch.',
-      alt: 'Relaxation area with sofas and warm lighting (illustrative image)',
+      contactTitle: 'Questions about membership?',
+      contact: 'Message us on WhatsApp or by email.',
     },
     law: {
       eyebrow: 'Legal framework',
@@ -309,7 +311,7 @@ const T = {
     ],
     footer: {
       visit: 'Address', contact: 'Contact', follow: 'Follow',
-      registry: `Registered with the ${CLUB.registry.name}, no. ${CLUB.registry.number}.`,
+      registry: `Registered with the ${CLUB.registry.name}, <span class="nowrap">no. ${CLUB.registry.number}</span>.`,
       daily: 'Every day',
       note: `Private, non-profit association. This website is for information only and does not promote or advertise cannabis use. Entry to the premises is for members aged ${AGE} and over only.`,
       legal: [['/aviso-legal/', 'Legal notice (ES)'], ['/privacidad/', 'Privacy policy (ES)'], ['/cookies/', 'Cookie policy (ES)']],
@@ -386,30 +388,35 @@ function homeSchema(t) {
 const jsonld = (obj) => `<script type="application/ld+json">${JSON.stringify(obj).replace(/</g, '\\u003c')}</script>`;
 
 /* ---------- shared chrome ---------- */
+// Must match the rendered hero image width (see .hero-grid in site.css).
+const HERO_SIZES = '(min-width: 1200px) 540px, (min-width: 960px) 45vw, calc(100vw - 2.25rem)';
+
 function head({ t, title, description, path, alternates, schema, preloadHero = false, noindex = false, gate = false }) {
   const url = abs(path);
   const hreflang = alternates
     ? alternates.map(([l, p]) => `<link rel="alternate" hreflang="${l}" href="${abs(p)}">`).join('\n')
     : '';
   const heroPreload = preloadHero
-    ? `<link rel="preload" as="image" type="image/avif" media="(max-width: 700px)" imagesrcset="${srcset('lounge-tall', 'avif')}" imagesizes="100vw" fetchpriority="high">
-<link rel="preload" as="image" type="image/avif" media="(min-width: 701px)" imagesrcset="${srcset('hero-lounge', 'avif')}" imagesizes="100vw" fetchpriority="high">`
+    ? `<link rel="preload" as="image" type="image/avif" imagesrcset="${srcset('lounge', 'avif')}" imagesizes="${HERO_SIZES}" fetchpriority="high">`
+    : '';
+  const gateCheck = gate
+    ? `;try{if(localStorage.getItem('gr-age-ok')!=='1')d.classList.add('age-pending')}catch(e){d.classList.add('age-pending')}`
     : '';
   return `<!DOCTYPE html>
 <html lang="${t.lang}">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
 ${noindex ? '<meta name="robots" content="noindex, follow">' : '<meta name="robots" content="index, follow, max-image-preview:large">'}
 <link rel="canonical" href="${url}">
 ${hreflang}
-${gate ? `<script>try{if(localStorage.getItem('gr-age-ok')!=='1')document.documentElement.classList.add('age-pending')}catch(e){document.documentElement.classList.add('age-pending')}</script>` : ''}
-<link rel="preload" href="/assets/fonts/cormorant-600.woff2" as="font" type="font/woff2" crossorigin>
+<script>var d=document.documentElement;d.classList.add('js')${gateCheck}</script>
+<link rel="preload" href="/assets/fonts/cormorant-500.woff2" as="font" type="font/woff2" crossorigin>
 ${heroPreload}
 <style>${CSS}</style>
-<meta name="theme-color" content="#011222">
+<meta name="theme-color" content="#f8f6f1">
 <link rel="icon" href="/favicon.ico" sizes="48x48">
 <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -453,14 +460,16 @@ function header(t, { onHome, langPaths }) {
   return `<a class="skip-link" href="#main">${t.skip}</a>
 <header class="site-header">
 <div class="wrap header-row">
-<a class="brand" href="${t.path}" aria-label="${esc(CLUB.shortName)} – ${t.home}">${LOGO(52, '', true)}<span>${CLUB.shortName}</span></a>
-<nav class="site-nav" aria-label="${t.navLabel}" id="site-nav"><ul>
+<a class="brand" href="${t.path}" aria-label="${esc(CLUB.shortName)} – ${t.home}">${LOGO(44, '', true)}<span>${CLUB.shortName}</span></a>
+<nav class="site-nav" aria-label="${t.navLabel}" id="site-nav">
+<ul>
 ${t.nav.map(([id, label]) => `<li><a href="${base}#${id}">${label}</a></li>`).join('\n')}
-</ul></nav>
-<div class="header-tools">
-<div class="lang-switch" role="group" aria-label="${t.langLabel}">${langItem('es', 'ES', esPath)}${langItem('en', 'EN', enPath)}</div>
-${socialLinks(t)}
-</div>
+</ul>
+<div class="nav-social">${socialLinks(t)}</div>
+</nav>
+<div class="lang-switch" role="group" aria-label="${t.langLabel}">${langItem('es', 'ES', esPath)}<span class="sep" aria-hidden="true"></span>${langItem('en', 'EN', enPath)}</div>
+<div class="header-social">${socialLinks(t)}</div>
+<button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="site-nav" aria-label="${t.menu}"><span class="menu-icon" aria-hidden="true"><span></span></span><span class="menu-label" aria-hidden="true">${t.menu}</span></button>
 </div>
 </header>`;
 }
@@ -471,25 +480,27 @@ function footer(t) {
 <div class="wrap">
 <div class="footer-grid">
 <div class="footer-brand">
-${LOGO(72, CLUB.shortName)}
+${LOGO(56, CLUB.shortName)}
 <p><strong>${CLUB.legalName}</strong></p>
-<p>CIF ${CLUB.cif}</p>
-<p>${f.registry}</p>
+<p class="footer-legal-id">CIF ${CLUB.cif}</p>
+<p class="footer-legal-id">${f.registry}</p>
 </div>
 <div>
 <h2>${f.visit}</h2>
 <address>${A.street}<br>${A.postalCode} ${A.localityDisplay}, ${A.province}<br>${A.countryName[t.lang]}</address>
-<p style="margin-top:.6rem">${f.daily}: ${HOURS}</p>
+<p class="footer-hours">${f.daily}: ${HOURS}</p>
 </div>
 <div>
 <h2>${f.contact}</h2>
-<p><a href="tel:${CLUB.phone}">${CLUB.phoneDisplay}</a></p>
-<p><a href="mailto:${CLUB.email}">${CLUB.email}</a></p>
-<p><a href="${CLUB.whatsapp}" rel="noopener" target="_blank">WhatsApp</a></p>
+<ul class="footer-links">
+<li><a href="tel:${CLUB.phone}">${CLUB.phoneDisplay}</a></li>
+<li><a href="mailto:${CLUB.email}">${CLUB.email}</a></li>
+<li><a href="${CLUB.whatsapp}" rel="noopener" target="_blank">WhatsApp</a></li>
+</ul>
 <div class="footer-social">${socialLinks(t)}</div>
 </div>
 </div>
-<p class="footer-note">${f.note}</p>
+<p class="note footer-note">${f.note}</p>
 <div class="footer-bottom">
 <p>© ${YEAR} ${CLUB.legalName}. ${f.rights}</p>
 <ul>${f.legal.map(([href, label]) => `<li><a href="${href}">${label}</a></li>`).join('')}</ul>
@@ -502,19 +513,19 @@ function ageGate(t) {
   const g = t.gate;
   return `<div class="age-gate" id="age-gate" role="dialog" aria-modal="true" aria-labelledby="age-title" aria-describedby="age-text">
 <div class="age-card">
-${LOGO(96, '', true)}
+${LOGO(80, '', true)}
 <div class="age-ask">
 <h2 id="age-title">${g.title}</h2>
 <p id="age-text">${g.text}</p>
 <div class="age-actions">
 <button class="btn btn-primary" type="button" data-age-yes>${g.yes}</button>
-<button class="btn btn-ghost" type="button" data-age-no>${g.no}</button>
+<button class="btn btn-secondary" type="button" data-age-no>${g.no}</button>
 </div>
 </div>
 <div class="age-denied" aria-live="polite">
 <h2>${g.deniedTitle}</h2>
 <p>${g.deniedText}</p>
-<button class="btn btn-ghost" type="button" data-age-back>${g.back}</button>
+<button class="btn btn-secondary" type="button" data-age-back>${g.back}</button>
 </div>
 </div>
 </div>`;
@@ -523,86 +534,104 @@ ${LOGO(96, '', true)}
 /* ---------- home page ---------- */
 function homePage(t) {
   const h = t.hero, ab = t.about, m = t.membership, law = t.law, loc = t.location, q = t.quick;
-  const directionsBtn = (label, cls = 'btn-primary') =>
-    `<a class="btn ${cls}" href="${esc(CLUB.mapsUrl)}" rel="noopener" target="_blank">${ICONS.map}${label}</a>`;
+  const mapsAttrs = `href="${esc(CLUB.mapsUrl)}" rel="noopener" target="_blank"`;
+  const directionsBtn = (label) => `<a class="btn btn-primary" ${mapsAttrs}>${ICONS.map}${label}</a>`;
+  // The Google rating is only shown when verified in site.config.mjs; otherwise a neutral link.
+  const rating = CLUB.googleRating;
+  const googleLink = rating
+    ? `<a class="text-link" ${mapsAttrs} aria-label="${esc(h.ratingLabel(rating))}"><span aria-hidden="true">★ ${t.lang === 'es' ? rating.replace('.', ',') : rating} ${h.rating}</span></a>`
+    : `<a class="text-link" ${mapsAttrs}>${ICONS.pin}${h.mapsLink}</a>`;
+  const gallerySizes = (i) => i === 0
+    ? '(min-width: 1000px) 760px, (min-width: 640px) calc(100vw - 5rem), calc(100vw - 2.25rem)'
+    : '(min-width: 1000px) 380px, (min-width: 640px) 45vw, 104px';
 
   const body = `<body>
 ${header(t, { onHome: true, langPaths: ['/', '/en/'] })}
 <main id="main">
 <section class="hero" aria-labelledby="hero-title">
-<div class="hero-media">${picture('hero-lounge', { alt: h.alt, sizes: '100vw', eager: true, mobile: 'lounge-tall' })}</div>
-<div class="wrap hero-content">
+<div class="wrap hero-grid">
+<div class="hero-content">
 <p class="eyebrow">${h.eyebrow}</p>
 <h1 id="hero-title">${h.h1}</h1>
 <p class="lead">${h.sub}</p>
-<div class="hero-ctas">
+<div class="btn-row">
 <a class="btn btn-primary" href="#membership">${h.cta1}${ICONS.arrow}</a>
-<a class="btn btn-ghost" href="#location">${ICONS.pin}${h.cta2}</a>
+<a class="btn btn-secondary" href="#location">${ICONS.pin}${h.cta2}</a>
 </div>
-<a class="rating-badge" href="${esc(CLUB.mapsUrl)}" rel="noopener" target="_blank" aria-label="${esc(h.ratingLabel)}"><span class="stars" aria-hidden="true">★★★★★</span><span aria-hidden="true">${t.lang === 'es' ? CLUB.googleRating.replace('.', ',') : CLUB.googleRating} ${h.rating}</span></a>
+${googleLink}
+</div>
+<figure class="hero-media">${picture('lounge', { alt: h.alt, sizes: HERO_SIZES, eager: true })}<figcaption class="media-label">${t.illustrative}</figcaption></figure>
 </div>
 </section>
 
 <div class="quick-info">
 <div class="wrap">
-<div class="qi-item">${ICONS.pin}<div><strong>${q.address}</strong><span>${A.street}, ${A.localityDisplay}</span></div></div>
-<div class="qi-item">${ICONS.clock}<div><strong>${q.hours}</strong><span>${q.daily} · ${HOURS}</span></div></div>
+<div class="qi-card">
+<div class="qi-item">${ICONS.pin}<div><span class="qi-label">${q.address}</span><span class="qi-value">${A.street}, ${A.localityDisplay}</span></div></div>
+<div class="qi-item">${ICONS.clock}<div><span class="qi-label">${q.hours}</span><span class="qi-value">${q.daily} · ${HOURS}</span></div></div>
 ${directionsBtn(q.directions)}
+</div>
 </div>
 </div>
 
 <section class="section" id="about" aria-labelledby="about-title">
-<div class="wrap">
-<div class="about-grid">
-<div>
+<div class="wrap about-grid">
+<div class="about-text">
 <p class="eyebrow">${ab.eyebrow}</p>
 <h2 id="about-title">${ab.h2}</h2>
 <p class="lead">${ab.lead}</p>
-<p class="muted">${ab.body}</p>
+<p>${ab.body}</p>
 </div>
 <ul class="pillars">
-${ab.pillars.map(([title, text]) => `<li><h3>${title}</h3><p>${text}</p></li>`).join('\n')}
+${ab.pillars.map(([title, text]) => `<li class="pillar"><h3>${title}</h3><p>${text}</p></li>`).join('\n')}
 </ul>
-</div>
-
-<div class="section-head space-head">
-<p class="eyebrow">${ab.spaceEyebrow}</p>
-<h2>${ab.spaceH2}</h2>
-<p class="lead">${ab.spaceLead}</p>
-</div>
-<ul class="space-grid">
-${ab.space.map(([slug, title, text, alt], i) => `<li class="space-card">${picture(slug, { alt, sizes: i === 0 ? '(min-width: 1000px) 760px, (min-width: 640px) 50vw, 100vw' : '(min-width: 1000px) 380px, (min-width: 640px) 50vw, 100vw' })}<div class="card-body"><h3>${title}</h3><p>${text}</p></div></li>`).join('\n')}
-</ul>
-<p class="disclaimer">${ab.imagesNote}</p>
 </div>
 </section>
 
-<section class="section section-alt" id="membership" aria-labelledby="membership-title">
-<div class="wrap membership-grid">
-<div>
+<section class="section section-stone" aria-labelledby="space-title">
+<div class="wrap">
+<div class="section-head">
+<p class="eyebrow">${ab.spaceEyebrow}</p>
+<h2 id="space-title">${ab.spaceH2}</h2>
+<p class="lead">${ab.spaceLead}</p>
+</div>
+<ul class="gallery">
+${ab.space.map(([slug, title, text, alt], i) => `<li class="gallery-item${i === 0 ? ' is-feature' : ''}">${picture(slug, { alt, sizes: gallerySizes(i) })}<div><h3>${title}</h3><p>${text}</p></div></li>`).join('\n')}
+</ul>
+<p class="note gallery-note">${ab.imagesNote}</p>
+</div>
+</section>
+
+<section class="section" id="membership" aria-labelledby="membership-title">
+<div class="wrap">
+<div class="section-head">
 <p class="eyebrow">${m.eyebrow}</p>
 <h2 id="membership-title">${m.h2}</h2>
 <p class="lead">${m.lead}</p>
+</div>
 <ol class="steps">
-${m.steps.map(([title, text]) => `<li class="step"><h3>${title}</h3><p>${text}</p></li>`).join('\n')}
+${m.steps.map(([title, text]) => `<li class="step"><div><h3>${title}</h3><p>${text}</p></div></li>`).join('\n')}
 </ol>
-<div class="requirements">
+<div class="membership-panels">
+<div class="panel">
 <h3>${m.reqTitle}</h3>
 <ul class="check-list">
 ${m.reqs.map((r) => `<li>${r}</li>`).join('\n')}
 </ul>
 </div>
-<p class="muted" style="margin-top:2rem;margin-bottom:0">${m.contact}</p>
-<div class="contact-cta" style="margin-top:1rem">
+<div class="panel panel-stone">
+<h3>${m.contactTitle}</h3>
+<p class="muted">${m.contact}</p>
+<div class="btn-row">
 <a class="btn btn-primary" href="${CLUB.whatsapp}" rel="noopener" target="_blank">${ICONS.whatsapp}WhatsApp</a>
-<a class="btn btn-ghost" href="mailto:${CLUB.email}">${ICONS.mail}${CLUB.email}</a>
+<a class="btn btn-secondary btn-wrap" href="mailto:${CLUB.email}">${ICONS.mail}${CLUB.email}</a>
 </div>
 </div>
-<div class="membership-media">${picture('lounge-tall', { alt: m.alt, sizes: '(min-width: 900px) 460px, 100vw' })}</div>
+</div>
 </div>
 </section>
 
-<section class="section" id="how-it-works" aria-labelledby="law-title">
+<section class="section section-stone" id="how-it-works" aria-labelledby="law-title">
 <div class="wrap">
 <div class="section-head">
 <p class="eyebrow">${law.eyebrow}</p>
@@ -610,23 +639,25 @@ ${m.reqs.map((r) => `<li>${r}</li>`).join('\n')}
 <p class="lead">${law.lead}</p>
 </div>
 <ul class="law-grid">
-${law.items.map(([tag, title, text]) => `<li><span class="tag">${tag}</span><h3>${title}</h3><p>${text}</p></li>`).join('\n')}
+${law.items.map(([tag, title, text]) => `<li class="law-item"><span class="tag">${tag}</span><h3>${title}</h3><p>${text}</p></li>`).join('\n')}
 </ul>
-<p class="disclaimer">${law.disclaimer}</p>
+<p class="note">${law.disclaimer}</p>
 </div>
 </section>
 
-<section class="section section-alt" id="location" aria-labelledby="location-title">
+<section class="section section-white" id="location" aria-labelledby="location-title">
 <div class="wrap location-grid">
 <div>
+<div class="section-head">
 <p class="eyebrow">${loc.eyebrow}</p>
 <h2 id="location-title">${loc.h2}</h2>
 <p class="lead">${loc.lead}</p>
+</div>
 <div class="info-block">
 <div>
 <h3>${loc.address}</h3>
 <address>${A.street}<br>${A.postalCode} ${A.localityDisplay}, ${A.province}<br>${A.countryName[t.lang]}</address>
-<p style="margin-top:1rem">${directionsBtn(loc.directions)}</p>
+${directionsBtn(loc.directions)}
 </div>
 <div>
 <h3>${loc.hours}</h3>
@@ -649,25 +680,27 @@ ${DAYS.map((d) => `<tr data-day="${d[0]}"><th scope="row">${t.lang === 'es' ? d[
 </div>
 </div>
 </div>
-<div class="map-embed" data-map-src="${esc(MAP_EMBED(t.lang))}" data-map-title="${esc(loc.mapTitle)}">
-${picture('map', { alt: loc.mapAlt, sizes: '(min-width: 900px) 640px, 100vw' })}
+<figure class="map" data-map-src="${esc(MAP_EMBED(t.lang))}" data-map-title="${esc(loc.mapTitle)}">
+<div class="map-media">
+${picture('map', { alt: loc.mapAlt, sizes: '(min-width: 960px) 600px, calc(100vw - 2.25rem)' })}
 <span class="map-attrib">© <a href="https://www.openstreetmap.org/copyright" rel="noopener" target="_blank">OpenStreetMap</a></span>
-<div class="map-overlay">
-<button class="btn btn-primary" type="button" data-map-load>${ICONS.map}${loc.mapLoad}</button>
-<p>${loc.mapNote}</p>
 </div>
-</div>
+<figcaption class="map-controls" data-map-controls>
+<button class="btn btn-secondary" type="button" data-map-load>${ICONS.map}${loc.mapLoad}</button>
+<p class="note">${loc.mapNote}</p>
+</figcaption>
+</figure>
 </div>
 </section>
 
 <section class="section" id="faq" aria-labelledby="faq-title">
-<div class="wrap">
+<div class="wrap faq-grid">
 <div class="section-head">
 <p class="eyebrow">${t.faqEyebrow}</p>
 <h2 id="faq-title">${t.faqTitle}</h2>
 </div>
 <div class="faq-list">
-${t.faq.map(([qq, a]) => `<details><summary><h3 style="display:inline;font:inherit;margin:0">${qq}</h3></summary><div class="answer">${a}</div></details>`).join('\n')}
+${t.faq.map(([qq, a]) => `<details><summary><h3>${qq}</h3></summary><div class="answer">${a}</div></details>`).join('\n')}
 </div>
 </div>
 </section>
@@ -692,7 +725,7 @@ const OWNER_DL = `<dl>
 <dt>Nombre comercial</dt><dd>${CLUB.brandName}</dd>
 <dt>CIF</dt><dd>${CLUB.cif}</dd>
 <dt>Domicilio</dt><dd>${A.street}, ${A.postalCode} ${A.localityDisplay}, ${A.province}, ${A.countryName.es}</dd>
-<dt>Registro</dt><dd>${CLUB.registry.name}, n.º ${CLUB.registry.number}</dd>
+<dt>Registro</dt><dd>${CLUB.registry.name}, <span class="nowrap">n.º ${CLUB.registry.number}</span></dd>
 <dt>Correo electrónico</dt><dd><a href="mailto:${CLUB.email}">${CLUB.email}</a></dd>
 <dt>Teléfono</dt><dd><a href="tel:${CLUB.phone}">${CLUB.phoneDisplay}</a></dd>
 </dl>`;
@@ -783,6 +816,7 @@ ${p.body}
 </div>
 </main>
 ${footer(t)}
+<script>${JS}</script>
 </body>
 </html>`;
   return head({
@@ -799,10 +833,11 @@ ${header(t, { onHome: false, langPaths: ['/', '/en/'] })}
 <div class="wrap">
 <h1>Página no encontrada</h1>
 <p class="lead">La página que buscas no existe. <span lang="en">This page doesn't exist.</span></p>
-<p><a class="btn btn-primary" href="/">Volver al inicio</a> <a class="btn btn-ghost" href="/en/" lang="en">English home</a></p>
+<div class="btn-row"><a class="btn btn-primary" href="/">Volver al inicio</a><a class="btn btn-secondary" href="/en/" lang="en">English home</a></div>
 </div>
 </main>
 ${footer(t)}
+<script>${JS}</script>
 </body>
 </html>`;
   return head({ t, title: 'Página no encontrada | Green Rabbit', description: T.es.description, path: '/404', noindex: true }) + '\n' + body;
@@ -831,8 +866,8 @@ const MANIFEST = JSON.stringify({
   short_name: CLUB.shortName,
   start_url: '/',
   display: 'browser',
-  background_color: '#011222',
-  theme_color: '#011222',
+  background_color: '#f8f6f1',
+  theme_color: '#f8f6f1',
   icons: [
     { src: '/icon-192.png', sizes: '192x192', type: 'image/png' },
     { src: '/icon-512.png', sizes: '512x512', type: 'image/png' },

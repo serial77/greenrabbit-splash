@@ -3,6 +3,35 @@
   var KEY = 'gr-age-ok';
   var root = document.documentElement;
 
+  // Mobile menu. Without JS the nav renders as a plain wrapped list (see CSS).
+  var header = document.querySelector('.site-header');
+  var toggle = document.querySelector('[data-menu-toggle]');
+  if (header && toggle) {
+    var isOpen = function () { return toggle.getAttribute('aria-expanded') === 'true'; };
+    var setOpen = function (open, returnFocus) {
+      header.classList.toggle('menu-open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+      if (!open && returnFocus) toggle.focus();
+    };
+    toggle.addEventListener('click', function () {
+      var open = !isOpen();
+      setOpen(open);
+      if (open) document.querySelector('#site-nav a').focus();
+    });
+    document.getElementById('site-nav').addEventListener('click', function (e) {
+      if (e.target.closest('a')) setOpen(false);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && isOpen()) setOpen(false, true);
+    });
+    document.addEventListener('click', function (e) {
+      if (isOpen() && !header.contains(e.target)) setOpen(false);
+    });
+    var desktop = window.matchMedia('(min-width: 960px)');
+    var onChange = function (e) { if (e.matches) setOpen(false); };
+    if (desktop.addEventListener) desktop.addEventListener('change', onChange);
+  }
+
   // Age gate: an overlay on top of fully rendered content. A tiny inline
   // script in <head> adds .age-pending before first paint when needed.
   var gate = document.getElementById('age-gate');
@@ -33,14 +62,16 @@
   }
 
   // Click-to-load Google Maps (no request to Google until the visitor asks).
-  Array.prototype.forEach.call(document.querySelectorAll('[data-map-src]'), function (box) {
-    box.querySelector('[data-map-load]').addEventListener('click', function () {
+  Array.prototype.forEach.call(document.querySelectorAll('[data-map-src]'), function (map) {
+    var controls = map.querySelector('[data-map-controls]');
+    map.querySelector('[data-map-load]').addEventListener('click', function () {
       var frame = document.createElement('iframe');
-      frame.src = box.getAttribute('data-map-src');
-      frame.title = box.getAttribute('data-map-title');
+      frame.src = map.getAttribute('data-map-src');
+      frame.title = map.getAttribute('data-map-title');
       frame.allowFullscreen = true;
       frame.referrerPolicy = 'no-referrer-when-downgrade';
-      box.replaceChildren(frame);
+      map.querySelector('.map-media').replaceChildren(frame);
+      if (controls) controls.hidden = true;
       frame.focus();
     });
   });
