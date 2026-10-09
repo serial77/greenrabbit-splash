@@ -1,4 +1,4 @@
-"""Generate the botanical decor SVGs (olive sprig, palm frond, leaf mark).
+"""Generate the botanical decor SVG (palm frond) used in the brand panels.
 
 Deliberately Mediterranean (olive, palm) rather than cannabis leaves: they are
 soft accents, not product imagery. Output: src/static/assets/img/decor/.
@@ -82,12 +82,10 @@ def leaf_mark(color):
             f'<path d="M{base[0]:.1f} {base[1]:.1f}L{(base[0] * .3 + tip[0] * .7):.1f} {(base[1] * .3 + tip[1] * .7):.1f}" stroke="{color}" stroke-width=".8" stroke-linecap="round"/></svg>')
 
 
+# Botanical motifs live only inside the deep-green brand panels, large and cropped
+# by the panel edge, so they read as part of the composition, not as stickers.
 FILES = {
-    "olive-line.svg": olive_sprig(SAGE, 1.3, 0.06),
-    "olive-gold.svg": olive_sprig(GOLD, 1.2, 0.12),
-    "palm-tonal.svg": palm_frond(SAGE, 0.09),
-    "palm-oak.svg": palm_frond(OAK, 0.10),
-    "leaf-mark.svg": leaf_mark(GOLD),
+    "palm-light.svg": palm_frond("#B9D3BF", 0.16),
 }
 for name, svg in FILES.items():
     with open(os.path.join(OUT, name), "w") as f:

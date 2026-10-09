@@ -59,9 +59,7 @@ const ICONS = {
   shield: `<svg viewBox="0 0 24 24" ${STROKE} aria-hidden="true"><path d="M12 3 5 6v5.2c0 4.4 2.9 8 7 9.8 4.1-1.8 7-5.4 7-9.8V6Z"/><path d="M12 8.5v4M12 15.5v.3"/></svg>`,
   lock: `<svg viewBox="0 0 24 24" ${STROKE} aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5M12 14.5v2.5"/></svg>`,
   car: `<svg viewBox="0 0 24 24" ${STROKE} aria-hidden="true"><path d="M4 15.5v-3.2L6 7.6A2 2 0 0 1 7.8 6.4h8.4A2 2 0 0 1 18 7.6l2 4.7v3.2"/><rect x="3" y="12.3" width="18" height="5.2" rx="1.6"/><path d="M6.5 17.5v2M17.5 17.5v2M6.5 15h1.5M16 15h1.5"/></svg>`,
-  calendar: `<svg viewBox="0 0 24 24" ${STROKE} aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8.5 3v4M15.5 3v4"/></svg>`,
   info: `<svg viewBox="0 0 24 24" ${STROKE} aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.8v.4"/></svg>`,
-  chat: `<svg viewBox="0 0 24 24" ${STROKE} aria-hidden="true"><path d="M20 12.5a7.5 7.5 0 0 1-11 6.6L4 20l1.1-4.2A7.5 7.5 0 1 1 20 12.5Z"/><path d="M9 11h6M9 14h4"/></svg>`,
 };
 const icon = (name) => ICONS[name];
 
@@ -109,7 +107,7 @@ const T = {
       mapsLink: 'Ver la ficha en Google Maps',
       rating: 'en Google',
       ratingLabel: (r) => `Valoración ${r.replace('.', ',')} de 5 en Google. Ver la ficha en Google Maps`,
-      alt: 'Zona lounge con sofás, luz cálida y pantalla de proyección (imagen ilustrativa)',
+      alt: 'Personas conversando en una zona lounge con sofás y pantalla de proyección (imagen ilustrativa)',
     },
     quick: { address: 'Dirección', hours: 'Horario para socios', daily: 'Todos los días', directions: 'Cómo llegar' },
     about: {
@@ -136,7 +134,7 @@ const T = {
       spaceLead: 'Un local amplio y cuidado para desconectar, trabajar con calma o compartir la tarde con otros socios.',
       imagesNote: 'Imágenes ilustrativas: no muestran el interior real del local.',
       space: [
-        ['hero-lounge', 'Salón lounge', 'Sofás amplios, luz cálida y una gran pantalla para ver cine, deporte o simplemente charlar.', 'Personas conversando en una zona lounge con sofás y pantalla de proyección (imagen ilustrativa)'],
+        ['lounge', 'Salón lounge', 'Sofás amplios, luz cálida y una gran pantalla para ver cine, deporte o simplemente charlar.', 'Zona lounge con sofás, luz cálida y pantalla de proyección (imagen ilustrativa)'],
         ['bar', 'Barra y rincón de café', 'Una barra con taburetes que hace de punto de encuentro del club.', 'Barra con taburetes y zona de café (imagen ilustrativa)'],
         ['games-room', 'Sala de juegos', 'Consolas, pantallas y sillones para partidas entre socios.', 'Sala de juegos con consolas y proyector (imagen ilustrativa)'],
         ['board-games', 'Juegos de mesa', 'Cartas y juegos de mesa para las tardes en grupo.', 'Grupo de personas jugando a un juego de mesa (imagen ilustrativa)'],
@@ -220,7 +218,9 @@ const T = {
       legal: [['/aviso-legal/', 'Aviso legal'], ['/privacidad/', 'Política de privacidad'], ['/cookies/', 'Política de cookies']],
       rights: 'Todos los derechos reservados.',
     },
-    alt2: 'Zona de descanso con sofás e iluminación cálida (imagen ilustrativa)',
+    brandPanel: { sub: 'Asociación privada · Calp', tag: 'Solo socios' },
+    spaceTabs: 'Elige un espacio',
+    faqAside: ['¿Tienes otra pregunta?', 'Escríbenos por WhatsApp'],
     social: { instagram: 'Green Rabbit en Instagram', tiktok: 'Green Rabbit en TikTok', whatsapp: 'Escribir por WhatsApp' },
   },
 
@@ -252,7 +252,7 @@ const T = {
       mapsLink: 'View our Google Maps listing',
       rating: 'on Google',
       ratingLabel: (r) => `Rated ${r} out of 5 on Google. View the listing on Google Maps`,
-      alt: 'Lounge area with sofas, warm light and a projection screen (illustrative image)',
+      alt: 'People chatting in a lounge area with sofas and a projection screen (illustrative image)',
     },
     quick: { address: 'Address', hours: 'Hours (members)', daily: 'Every day', directions: 'Get directions' },
     about: {
@@ -279,7 +279,7 @@ const T = {
       spaceLead: 'A spacious, carefully designed place to unwind, work in peace or spend the afternoon with other members.',
       imagesNote: 'Illustrative images: they do not show the actual premises.',
       space: [
-        ['hero-lounge', 'Lounge', 'Deep sofas, warm light and a big screen for films, sport or simply talking.', 'People chatting in a lounge area with sofas and a projection screen (illustrative image)'],
+        ['lounge', 'Lounge', 'Deep sofas, warm light and a big screen for films, sport or simply talking.', 'Lounge area with sofas, warm light and a projection screen (illustrative image)'],
         ['bar', 'Bar & coffee corner', "A counter with stools that's the club's natural meeting point.", 'Bar counter with stools and a coffee area (illustrative image)'],
         ['games-room', 'Games room', 'Consoles, screens and armchairs for games between members.', 'Games room with consoles and a projector (illustrative image)'],
         ['board-games', 'Board games', 'Cards and board games for afternoons in good company.', 'Group of people playing a board game (illustrative image)'],
@@ -363,7 +363,9 @@ const T = {
       legal: [['/aviso-legal/', 'Legal notice (ES)'], ['/privacidad/', 'Privacy policy (ES)'], ['/cookies/', 'Cookie policy (ES)']],
       rights: 'All rights reserved.',
     },
-    alt2: 'Relaxation area with sofas and warm lighting (illustrative image)',
+    brandPanel: { sub: 'Private association · Calp', tag: 'Members only' },
+    spaceTabs: 'Choose a space',
+    faqAside: ['Another question?', 'Message us on WhatsApp'],
     social: { instagram: 'Green Rabbit on Instagram', tiktok: 'Green Rabbit on TikTok', whatsapp: 'Message us on WhatsApp' },
   },
 };
@@ -527,10 +529,8 @@ function footer(t) {
 <div class="wrap">
 <div class="footer-grid">
 <div class="footer-brand">
-${LOGO(56, CLUB.shortName)}
-<p><strong>${CLUB.legalName}</strong></p>
-<p class="footer-legal-id">CIF ${CLUB.cif}</p>
-<p class="footer-legal-id">${f.registry}</p>
+<div class="lockup">${LOGO(56, '')}<div><p class="lockup-name">${CLUB.shortName}</p><p class="lockup-sub">Cannabis Social Club · ${A.locality}</p></div></div>
+<p class="footer-legal"><strong>${CLUB.legalName}</strong><br>CIF ${CLUB.cif}<br>${f.registry}</p>
 </div>
 <div>
 <h2>${f.visit}</h2>
@@ -544,7 +544,13 @@ ${LOGO(56, CLUB.shortName)}
 <li><a href="mailto:${CLUB.email}">${CLUB.email}</a></li>
 <li><a href="${CLUB.whatsapp}" rel="noopener" target="_blank">WhatsApp</a></li>
 </ul>
-<div class="footer-social">${socialLinks(t)}</div>
+</div>
+<div>
+<h2>${f.follow}</h2>
+<ul class="footer-links">
+<li><a href="${CLUB.instagram}" rel="noopener" target="_blank">${ICONS.instagram}Instagram</a></li>
+<li><a href="${CLUB.tiktok}" rel="noopener" target="_blank">${ICONS.tiktok}TikTok</a></li>
+</ul>
 </div>
 </div>
 <p class="note footer-note">${f.note}</p>
@@ -586,29 +592,29 @@ function homePage(t) {
   // The Google rating is only shown when verified in site.config.mjs; otherwise a neutral link.
   const rating = CLUB.googleRating;
   const googleLink = rating
-    ? `<a class="text-link" ${mapsAttrs} aria-label="${esc(h.ratingLabel(rating))}"><span aria-hidden="true">★ ${t.lang === 'es' ? rating.replace('.', ',') : rating} ${h.rating}</span></a>`
-    : `<a class="text-link" ${mapsAttrs}>${ICONS.pin}${h.mapsLink}</a>`;
-  const gallerySizes = (i) => i === 0
-    ? '(min-width: 1000px) 760px, (min-width: 640px) calc(100vw - 5rem), calc(100vw - 2.25rem)'
-    : '(min-width: 1000px) 380px, (min-width: 640px) 45vw, 104px';
-  const iconList = (items, cls = 'icon-list') =>
-    `<ul class="${cls}">${items.map(([ic, text]) => `<li><span class="icon-badge">${icon(ic)}</span><span>${text}</span></li>`).join('')}</ul>`;
+    ? `<a class="text-link text-link-light" ${mapsAttrs} aria-label="${esc(h.ratingLabel(rating))}"><span aria-hidden="true">★ ${t.lang === 'es' ? rating.replace('.', ',') : rating} ${h.rating}</span></a>`
+    : `<a class="text-link text-link-light" ${mapsAttrs}>${ICONS.pin}${h.mapsLink}</a>`;
+  const iconList = (items) =>
+    `<ul class="icon-list">${items.map(([ic, text]) => `<li><span class="icon-badge">${icon(ic)}</span><span>${text}</span></li>`).join('')}</ul>`;
+  const card = (ic, title, text, tag = '') =>
+    `<span class="icon-badge icon-badge-lg">${icon(ic)}</span>${tag ? `<span class="tag">${tag}</span>` : ''}<h3>${title}</h3><p>${text}</p>`;
   const STEP_ICONS = ['idcard', 'referral', 'approved'];
   const LAW_ICONS = ['scale', 'people', 'shield', 'lock'];
+  const pad = (n) => String(n).padStart(2, '0');
 
   const body = `<body>
 ${header(t, { onHome: true, langPaths: ['/', '/en/'] })}
 <main id="main">
 <section class="hero" aria-labelledby="hero-title">
-<figure class="hero-media">${picture('lounge', { alt: h.alt, sizes: HERO_SIZES, eager: true })}<figcaption class="media-label">${t.illustrative}</figcaption></figure>
+<figure class="hero-media">${picture('hero-lounge', { alt: h.alt, sizes: HERO_SIZES, eager: true })}<figcaption class="media-label">${t.illustrative}</figcaption></figure>
 <div class="wrap hero-inner">
 <div class="hero-content">
 <p class="eyebrow">${h.eyebrow}</p>
 <h1 id="hero-title">${h.h1}</h1>
 <p class="lead">${h.sub}</p>
 <div class="btn-row">
-<a class="btn btn-primary" href="#membership">${h.cta1}${ICONS.arrow}</a>
-<a class="btn btn-secondary" href="#location">${ICONS.pin}${h.cta2}</a>
+<a class="btn btn-light" href="#membership">${h.cta1}${ICONS.arrow}</a>
+<a class="btn btn-outline-light" href="#location">${ICONS.pin}${h.cta2}</a>
 </div>
 ${googleLink}
 </div>
@@ -618,46 +624,50 @@ ${googleLink}
 <div class="quick-info">
 <div class="wrap">
 <div class="qi-card">
-<div class="qi-item"><span class="icon-badge">${ICONS.pin}</span><div><span class="qi-label">${q.address}</span><span class="qi-value">${A.street}, ${A.localityDisplay}</span></div></div>
-<div class="qi-item"><span class="icon-badge">${ICONS.clock}</span><div><span class="qi-label">${q.hours}</span><span class="qi-value">${q.daily} · ${HOURS}</span></div></div>
+<div class="qi-item">${ICONS.pin}<div><span class="qi-label">${q.address}</span><span class="qi-value">${A.street}, ${A.localityDisplay}</span></div></div>
+<div class="qi-item">${ICONS.clock}<div><span class="qi-label">${q.hours}</span><span class="qi-value">${q.daily} · ${HOURS}</span></div></div>
 ${directionsBtn(q.directions)}
 </div>
 </div>
 </div>
 
-<section class="section section-about" id="about" aria-labelledby="about-title">
-<div class="wrap about-grid">
-<div class="about-text">
-<p class="eyebrow">${ab.eyebrow}</p>
-<h2 id="about-title">${ab.h2}</h2>
+<section class="section" id="about" aria-labelledby="about-title">
+<div class="wrap">
+<div class="section-head section-head-split">
+<div><p class="eyebrow">${ab.eyebrow}</p><h2 id="about-title">${ab.h2}</h2></div>
 <p class="lead">${ab.lead}</p>
-<p>${ab.body}</p>
-<div class="not-box">
+</div>
+<div class="about-grid">
+<div class="green-panel">
+<p class="green-panel-lead">${ab.body}</p>
 <h3>${ab.notTitle}</h3>
-${iconList(ab.nots, 'icon-list icon-list-compact')}
+${iconList(ab.nots)}
 </div>
-</div>
-<ul class="pillars">
-${ab.pillars.map(([title, text], i) => `<li class="pillar"><span class="icon-badge icon-badge-lg">${icon(ab.pillarIcons[i])}</span><h3>${title}</h3><p>${text}</p></li>`).join('\n')}
+<ul class="card-grid">
+${ab.pillars.map(([title, text], i) => `<li class="card">${card(ab.pillarIcons[i], title, text)}</li>`).join('\n')}
 </ul>
+</div>
 </div>
 </section>
 
 <section class="section section-stone" aria-labelledby="space-title">
-<div class="wrap">
-<div class="section-head">
+<div class="wrap space-grid">
+<div class="space-head">
 <p class="eyebrow">${ab.spaceEyebrow}</p>
 <h2 id="space-title">${ab.spaceH2}</h2>
 <p class="lead">${ab.spaceLead}</p>
 </div>
-<ul class="gallery">
-${ab.space.map(([slug, title, text, alt], i) => `<li class="gallery-item${i === 0 ? ' is-feature' : ''}">${picture(slug, { alt, sizes: gallerySizes(i) })}<div><h3>${title}</h3><p>${text}</p></div></li>`).join('\n')}
-</ul>
-<p class="note note-icon gallery-note">${ICONS.info}<span>${ab.imagesNote}</span></p>
+<div class="space-tabs" role="tablist" aria-label="${esc(t.spaceTabs)}">
+${ab.space.map(([slug, title], i) => `<button class="space-tab" type="button" role="tab" id="space-tab-${i}" aria-controls="space-panel-${i}" aria-selected="${i === 0}" tabindex="${i === 0 ? 0 : -1}">${picture(slug, { alt: '', sizes: '120px' })}<span>${title}</span></button>`).join('\n')}
+</div>
+<p class="note note-icon space-note">${ICONS.info}<span>${ab.imagesNote}</span></p>
+<div class="space-stage">
+${ab.space.map(([slug, title, text, alt], i) => `<figure class="space-panel${i === 0 ? ' is-active' : ''}" role="tabpanel" id="space-panel-${i}" aria-labelledby="space-tab-${i}">${picture(slug, { alt, sizes: '(min-width: 1000px) 700px, calc(100vw - 2.25rem)' })}<figcaption><h3>${title}</h3><p>${text}</p></figcaption></figure>`).join('\n')}
+</div>
 </div>
 </section>
 
-<section class="section section-membership" id="membership" aria-labelledby="membership-title">
+<section class="section" id="membership" aria-labelledby="membership-title">
 <div class="wrap">
 <div class="membership-layout">
 <div class="section-head">
@@ -666,9 +676,14 @@ ${ab.space.map(([slug, title, text, alt], i) => `<li class="gallery-item${i === 
 <p class="lead">${m.lead}</p>
 <ul class="chips">${m.chips.map((c) => `<li>${ICONS.no}${c}</li>`).join('')}</ul>
 </div>
-<figure class="membership-media">${picture('lounge-tall', { alt: t.alt2, sizes: '(min-width: 1000px) 440px, calc(100vw - 2.25rem)' })}<figcaption class="media-label">${t.illustrative}</figcaption></figure>
+<div class="brand-panel">
+<img src="/assets/img/logo-384.webp" width="200" height="200" alt="${esc(CLUB.shortName)}" loading="lazy" decoding="async">
+<p class="brand-panel-name">${CLUB.shortName}</p>
+<p class="brand-panel-sub">${t.brandPanel.sub}</p>
+<p class="brand-panel-tag">${t.brandPanel.tag}</p>
+</div>
 <ol class="steps">
-${m.steps.map(([title, text], i) => `<li class="step"><span class="step-icon">${icon(STEP_ICONS[i])}<span class="step-num">${i + 1}</span></span><div><h3>${title}</h3><p>${text}</p></div></li>`).join('\n')}
+${m.steps.map(([title, text], i) => `<li class="step"><span class="icon-badge icon-badge-lg">${icon(STEP_ICONS[i])}</span><div><span class="tag">${pad(i + 1)}</span><h3>${title}</h3><p>${text}</p></div></li>`).join('\n')}
 </ol>
 </div>
 <div class="membership-panels">
@@ -677,9 +692,8 @@ ${m.steps.map(([title, text], i) => `<li class="step"><span class="step-icon">${
 ${iconList(m.reqs)}
 </div>
 <div class="panel panel-stone">
-<span class="icon-badge icon-badge-lg">${ICONS.chat}</span>
 <h3>${m.contactTitle}</h3>
-<p class="muted">${m.contact}</p>
+<p>${m.contact}</p>
 <div class="btn-row">
 <a class="btn btn-primary" href="${CLUB.whatsapp}" rel="noopener" target="_blank">${ICONS.whatsapp}WhatsApp</a>
 <a class="btn btn-secondary btn-wrap" href="mailto:${CLUB.email}">${ICONS.mail}${CLUB.email}</a>
@@ -689,39 +703,41 @@ ${iconList(m.reqs)}
 </div>
 </section>
 
-<section class="section section-stone section-law" id="how-it-works" aria-labelledby="law-title">
+<section class="section section-stone" id="how-it-works" aria-labelledby="law-title">
 <div class="wrap">
-<div class="section-head">
-<p class="eyebrow">${law.eyebrow}</p>
-<h2 id="law-title">${law.h2}</h2>
+<div class="section-head section-head-split">
+<div><p class="eyebrow">${law.eyebrow}</p><h2 id="law-title">${law.h2}</h2></div>
 <p class="lead">${law.lead}</p>
 </div>
-<ul class="law-grid">
-${law.items.map(([tag, title, text], i) => `<li class="law-item"><span class="icon-badge icon-badge-lg">${icon(LAW_ICONS[i])}</span><div><span class="tag">${tag}</span><h3>${title}</h3><p>${text}</p></div></li>`).join('\n')}
+<ul class="card-grid card-grid-2">
+${law.items.map(([tag, title, text], i) => `<li class="card">${card(LAW_ICONS[i], title, text, tag)}</li>`).join('\n')}
 </ul>
-<p class="note note-icon">${ICONS.info}<span>${law.disclaimer}</span></p>
+<p class="note note-icon law-note">${ICONS.info}<span>${law.disclaimer}</span></p>
 </div>
 </section>
 
 <section class="section section-white" id="location" aria-labelledby="location-title">
-<div class="wrap location-grid">
+<div class="wrap">
+<div class="section-head section-head-split">
+<div><p class="eyebrow">${loc.eyebrow}</p><h2 id="location-title">${loc.h2}</h2></div>
 <div>
-<div class="section-head">
-<p class="eyebrow">${loc.eyebrow}</p>
-<h2 id="location-title">${loc.h2}</h2>
 <p class="lead">${loc.lead}</p>
-<p class="travel-label">${ICONS.car}${loc.byCar}</p>
-<ul class="chips chips-travel">${loc.travel.map(([place, time]) => `<li><strong>${place}</strong> ${time}</li>`).join('')}</ul>
+<ul class="chips chips-travel" aria-label="${esc(loc.byCar)}">${loc.travel.map(([place, time]) => `<li>${ICONS.car}<strong>${place}</strong> ${time}</li>`).join('')}</ul>
 </div>
-<div class="info-block">
-<div class="info-card">
-<h3>${loc.address}</h3>
-<address>${A.street}<br>${A.postalCode} ${A.localityDisplay}, ${A.province}<br>${A.countryName[t.lang]}</address>
+</div>
+<div class="location-grid">
+<div class="visit-card">
+<div class="visit-block">
+<span class="qi-label">${loc.address}</span>
+<address class="address-lg">${A.street}<br>${A.postalCode} ${A.localityDisplay}, ${A.province}<br>${A.countryName[t.lang]}</address>
 ${directionsBtn(loc.directions)}
 </div>
-<div class="info-card">
-<h3>${loc.hours}</h3>
-<p class="hours-summary"><span class="icon-badge">${ICONS.calendar}</span><span><span class="qi-label">${loc.hoursSummary}</span><span class="hours-big">${HOURS}</span></span></p>
+<div class="visit-block visit-hours">
+<span class="icon-badge icon-badge-lg">${ICONS.clock}</span>
+<div>
+<span class="qi-label">${loc.hours}</span>
+<span class="hours-big">${HOURS}</span>
+<span class="hours-days">${loc.hoursSummary}</span>
 <details class="hours-more">
 <summary>${loc.hoursMore}</summary>
 <table class="hours-table">
@@ -732,21 +748,21 @@ ${DAYS.map((d) => `<tr data-day="${d[0]}"><th scope="row">${t.lang === 'es' ? d[
 </table>
 </details>
 </div>
-<div>
-<h3>${loc.contact}</h3>
-<ul class="contact-list">
-<li><a href="tel:${CLUB.phone}"><span class="icon-badge">${ICONS.phone}</span>${CLUB.phoneDisplay}</a></li>
-<li><a href="${CLUB.whatsapp}" rel="noopener" target="_blank"><span class="icon-badge">${ICONS.whatsapp}</span>WhatsApp</a></li>
-<li><a href="mailto:${CLUB.email}"><span class="icon-badge">${ICONS.mail}</span>${CLUB.email}</a></li>
-<li><a href="${CLUB.instagram}" rel="noopener" target="_blank"><span class="icon-badge">${ICONS.instagram}</span>Instagram ${CLUB.handle}</a></li>
-<li><a href="${CLUB.tiktok}" rel="noopener" target="_blank"><span class="icon-badge">${ICONS.tiktok}</span>TikTok ${CLUB.handle}</a></li>
-</ul>
 </div>
+<div class="visit-block">
+<span class="qi-label">${loc.contact}</span>
+<ul class="contact-list">
+<li><a href="tel:${CLUB.phone}">${ICONS.phone}${CLUB.phoneDisplay}</a></li>
+<li><a href="${CLUB.whatsapp}" rel="noopener" target="_blank">${ICONS.whatsapp}WhatsApp</a></li>
+<li><a href="mailto:${CLUB.email}">${ICONS.mail}${CLUB.email}</a></li>
+<li><a href="${CLUB.instagram}" rel="noopener" target="_blank">${ICONS.instagram}Instagram ${CLUB.handle}</a></li>
+<li><a href="${CLUB.tiktok}" rel="noopener" target="_blank">${ICONS.tiktok}TikTok ${CLUB.handle}</a></li>
+</ul>
 </div>
 </div>
 <figure class="map" data-map-src="${esc(MAP_EMBED(t.lang))}" data-map-title="${esc(loc.mapTitle)}">
 <div class="map-media">
-${picture('map', { alt: loc.mapAlt, sizes: '(min-width: 960px) 600px, calc(100vw - 2.25rem)' })}
+${picture('map', { alt: loc.mapAlt, sizes: '(min-width: 960px) 640px, calc(100vw - 2.25rem)' })}
 <span class="map-attrib">© <a href="https://www.openstreetmap.org/copyright" rel="noopener" target="_blank">OpenStreetMap</a></span>
 </div>
 <figcaption class="map-controls" data-map-controls>
@@ -755,13 +771,15 @@ ${picture('map', { alt: loc.mapAlt, sizes: '(min-width: 960px) 600px, calc(100vw
 </figcaption>
 </figure>
 </div>
+</div>
 </section>
 
-<section class="section section-faq" id="faq" aria-labelledby="faq-title">
+<section class="section" id="faq" aria-labelledby="faq-title">
 <div class="wrap faq-grid">
 <div class="section-head">
 <p class="eyebrow">${t.faqEyebrow}</p>
 <h2 id="faq-title">${t.faqTitle}</h2>
+<p class="faq-aside">${t.faqAside[0]} <a href="${CLUB.whatsapp}" rel="noopener" target="_blank">${t.faqAside[1]}</a></p>
 </div>
 <div class="faq-list">
 ${t.faq.map(([qq, a]) => `<details><summary><h3>${qq}</h3></summary><div class="answer">${a}</div></details>`).join('\n')}

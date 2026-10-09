@@ -16,18 +16,17 @@ await mkdir(FONTS, { recursive: true });
 
 // slug -> [source file, widths]
 const PHOTOS = {
-  'hero-lounge': ['7aa671cb-591e-411f-a9c5-88228f0e0429.jpeg', [640, 960, 1280, 1600]],
+  'hero-lounge': ['7aa671cb-591e-411f-a9c5-88228f0e0429.jpeg', [640, 800, 1080, 1280, 1600]],
   'lounge': ['48aff171-39e5-49de-9e58-2c9bda786668.jpeg', [480, 800, 1200, 1448]],
   'bar': ['60f011a3-0d41-4027-8ce2-a6d03b3bdc7e.jpeg', [480, 800, 1200]],
   'games-room': ['fc5d3072-e2a3-4f1c-86a9-457812e009fc.jpeg', [480, 800, 1200]],
   'board-games': ['887cb7ed-11df-4e8b-9c0d-8066f6021828.jpeg', [480, 800, 1200]],
   'workspace': ['b1b274e6-822b-4384-a1da-cf3b7b60f163.jpeg', [480, 800, 1200]],
   'cinema': ['bb512bd4-c975-4854-bc97-b70cff920b7b.jpeg', [480, 800, 1200]],
-  'lounge-tall': ['720e9c31-6f76-40a0-9852-1976460ed8a9.jpeg', [480, 800]],
 };
 
-// The hero (LCP) image gets slightly stronger compression to keep mobile LCP low.
-const HERO = new Set(['lounge']);
+// The hero photo is shown large and full-bleed, so it gets higher quality and full chroma.
+const HERO = new Set(['hero-lounge']);
 const manifest = {};
 
 async function encodeSet(slug, input, widths) {
@@ -35,9 +34,10 @@ async function encodeSet(slug, input, widths) {
   manifest[slug] = { ratio: meta.height / meta.width, widths };
   for (const w of widths) {
     const base = sharp(input).resize({ width: w, withoutEnlargement: true });
-    await base.clone().avif({ quality: HERO.has(slug) ? 38 : 50, effort: 6 }).toFile(join(IMG, `${slug}-${w}.avif`));
-    await base.clone().webp({ quality: 72 }).toFile(join(IMG, `${slug}-${w}.webp`));
-    await base.clone().jpeg({ quality: 76, mozjpeg: true }).toFile(join(IMG, `${slug}-${w}.jpg`));
+    const hero = HERO.has(slug);
+    await base.clone().avif({ quality: hero ? 58 : 50, effort: 6, chromaSubsampling: hero && w >= 1280 ? '4:4:4' : '4:2:0' }).toFile(join(IMG, `${slug}-${w}.avif`));
+    await base.clone().webp({ quality: hero ? 82 : 72 }).toFile(join(IMG, `${slug}-${w}.webp`));
+    await base.clone().jpeg({ quality: hero ? 84 : 76, mozjpeg: true }).toFile(join(IMG, `${slug}-${w}.jpg`));
   }
 }
 

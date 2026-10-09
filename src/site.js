@@ -76,6 +76,33 @@
     });
   });
 
+  // "El espacio" gallery: tabs switch the featured image (WAI-ARIA tabs pattern).
+  // Without JS every panel is shown and the tab row is hidden (see CSS).
+  var tablist = document.querySelector('.space-tabs');
+  if (tablist) {
+    var tabs = Array.prototype.slice.call(tablist.querySelectorAll('[role="tab"]'));
+    var select = function (index, focus) {
+      tabs.forEach(function (tab, i) {
+        var on = i === index;
+        tab.setAttribute('aria-selected', String(on));
+        tab.tabIndex = on ? 0 : -1;
+        document.getElementById(tab.getAttribute('aria-controls')).classList.toggle('is-active', on);
+      });
+      if (focus) tabs[index].focus();
+    };
+    tabs.forEach(function (tab, i) {
+      tab.addEventListener('click', function () { select(i); });
+      tab.addEventListener('keydown', function (e) {
+        var n = tabs.length, next = null;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = (i + 1) % n;
+        else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = (i - 1 + n) % n;
+        else if (e.key === 'Home') next = 0;
+        else if (e.key === 'End') next = n - 1;
+        if (next !== null) { e.preventDefault(); select(next, true); }
+      });
+    });
+  }
+
   // Highlight today's row in the opening-hours table (club time zone).
   try {
     var today = new Intl.DateTimeFormat('en-GB', { weekday: 'short', timeZone: 'Europe/Madrid' }).format(new Date());
