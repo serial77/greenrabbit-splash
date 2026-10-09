@@ -26,5 +26,6 @@ npm install && npm run images   # only when photos/logo change (needs Python 3 +
 
 `vercel.json` sets build command `node build.mjs`, output `dist/`, no install step,
 clean URLs with trailing slashes, cache and security headers. Pushing to `master`
-deploys. Make `greenrabbit.es` the primary domain and redirect `www` to it in
-Vercel → Project → Settings → Domains.
+deploys. The canonical domain is `https://www.greenrabbit.es` (`SITE_URL` in
+`site.config.mjs`); the apex `greenrabbit.es` redirects to it via Vercel → Project →
+Settings → Domains. Keep the two in sync if that ever changes.

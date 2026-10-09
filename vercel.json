@@ -27,6 +27,7 @@
   ],
   "redirects": [
     { "source": "/es/", "destination": "/", "permanent": true },
-    { "source": "/greenrabbit-splash.html", "destination": "/", "permanent": true }
+    { "source": "/greenrabbit-splash.html", "destination": "/", "permanent": true },
+    { "source": "/greenrabbit-splash/", "destination": "/", "permanent": true }
   ]
 }

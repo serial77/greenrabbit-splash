@@ -2,7 +2,7 @@
 // sitemap and legal pages are generated from this file by build.mjs.
 // Anything still unconfirmed goes in TODO below; the build prints the list.
 
-export const SITE_URL = 'https://greenrabbit.es';
+export const SITE_URL = 'https://www.greenrabbit.es';
 
 export const CLUB = {
   brandName: 'Green Rabbit Cannabis Social Club',
