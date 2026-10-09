@@ -24,8 +24,7 @@ export const CLUB = {
     countryName: { es: 'España', en: 'Spain' },
   },
   geo: { lat: 38.6428757, lng: 0.0509588 },
-  mapsUrl:
-    'https://www.google.com/maps/place/Asociaci%C3%B3n+Green+Rabbit+Cannabis+Social+Club/@38.6428757,0.0509588,17z/data=!4m6!3m5!1s0x129dff779bc4a06b:0x797da815958ddfd!8m2!3d38.6428757!4d0.0509588',
+  mapsUrl: 'https://maps.app.goo.gl/sezGf1kB1fhvcYVbA',
   // Same hours every day (Mo–Su). 24h format.
   hours: { opens: '12:30', closes: '22:00' },
   phone: '+34601926578',
