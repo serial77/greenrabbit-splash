@@ -1,13 +1,35 @@
 // Static site generator for greenrabbit.es. Zero dependencies: `node build.mjs`
 // renders dist/ from site.config.mjs, src/ templates below and src/static/.
 import { readFile, writeFile, mkdir, rm, cp } from 'node:fs/promises';
+import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { dirname, join } from 'node:path';
 import { CLUB, SITE_URL, LEGAL_UPDATED, TODO } from './site.config.mjs';
+import es from './src/i18n/es.mjs';
+import en from './src/i18n/en.mjs';
+import fr from './src/i18n/fr.mjs';
+import de from './src/i18n/de.mjs';
+import it from './src/i18n/it.mjs';
+import nl from './src/i18n/nl.mjs';
+import sv from './src/i18n/sv.mjs';
+import ru from './src/i18n/ru.mjs';
+import ar from './src/i18n/ar.mjs';
 
 const ROOT = dirname(new URL(import.meta.url).pathname);
+// Content fingerprint for static asset URLs, so browsers never keep a stale
+// copy after an image or font is regenerated under the same file name.
+const versions = new Map();
+const asset = (path) => {
+  if (!versions.has(path)) {
+    const hash = createHash('sha1').update(readFileSync(join(ROOT, 'src/static', path))).digest('hex').slice(0, 8);
+    versions.set(path, `${path}?v=${hash}`);
+  }
+  return versions.get(path);
+};
 const DIST = join(ROOT, 'dist');
 const IMAGES = JSON.parse(await readFile(join(ROOT, 'src/image-manifest.json'), 'utf8'));
 const CSS = (await readFile(join(ROOT, 'src/site.css'), 'utf8'))
+  .replace(/url\('(\/assets\/[^']+)'\)/g, (_, path) => `url('${asset(path)}')`)
   .replace(/\/\*[\s\S]*?\*\//g, '').replace(/\s*\n\s*/g, '\n').trim();
 const JS = (await readFile(join(ROOT, 'src/site.js'), 'utf8'))
   .replace(/^\s*\/\/.*$/gm, '').replace(/\n\s*\n/g, '\n').trim();
@@ -19,6 +41,9 @@ const abs = (path) => SITE_URL + path;
 
 const A = CLUB.address;
 const HOURS = `${CLUB.hours.opens}–${CLUB.hours.closes}`;
+// <bdi> keeps Latin/number runs (hours, phone, address) in order inside right-to-left text.
+const bdi = (s) => `<bdi>${s}</bdi>`;
+const HOURS_HTML = bdi(HOURS);
 const DAYS = [
   ['Mon', 'Monday', 'Lunes', 'Monday'],
   ['Tue', 'Tuesday', 'Martes', 'Tuesday'],
@@ -29,6 +54,20 @@ const DAYS = [
   ['Sun', 'Sunday', 'Domingo', 'Sunday'],
 ];
 const AGE = CLUB.minAge;
+// Languages: path, html lang, hreflang, OG locale, direction, native name, country name.
+const LANGS = [
+  { code: 'es', lang: 'es', hreflang: 'es', path: '/', locale: 'es_ES', dir: 'ltr', name: 'Español', country: 'España', copy: es },
+  { code: 'en', lang: 'en', hreflang: 'en', path: '/en/', locale: 'en_GB', dir: 'ltr', name: 'English', country: 'Spain', copy: en },
+  { code: 'fr', lang: 'fr', hreflang: 'fr', path: '/fr/', locale: 'fr_FR', dir: 'ltr', name: 'Français', country: 'Espagne', copy: fr },
+  { code: 'de', lang: 'de', hreflang: 'de', path: '/de/', locale: 'de_DE', dir: 'ltr', name: 'Deutsch', country: 'Spanien', copy: de },
+  { code: 'it', lang: 'it', hreflang: 'it', path: '/it/', locale: 'it_IT', dir: 'ltr', name: 'Italiano', country: 'Spagna', copy: it },
+  { code: 'nl', lang: 'nl', hreflang: 'nl', path: '/nl/', locale: 'nl_NL', dir: 'ltr', name: 'Nederlands', country: 'Spanje', copy: nl },
+  { code: 'sv', lang: 'sv', hreflang: 'sv', path: '/sv/', locale: 'sv_SE', dir: 'ltr', name: 'Svenska', country: 'Spanien', copy: sv },
+  { code: 'ru', lang: 'ru', hreflang: 'ru', path: '/ru/', locale: 'ru_RU', dir: 'ltr', name: 'Русский', country: 'Испания', copy: ru },
+  { code: 'ar', lang: 'ar-MA', hreflang: 'ar-MA', path: '/ar/', locale: 'ar_MA', dir: 'rtl', name: 'العربية', country: 'إسبانيا', copy: ar },
+];
+// Heading font file to preload per language (the hero h1 uses the serif).
+const SERIF_PRELOAD = { ru: '/assets/fonts/cormorant-cyrillic-500.woff2', ar: '/assets/fonts/amiri-arabic-400.woff2' };
 const MAP_EMBED = (lang) =>
   `https://maps.google.com/maps?q=${CLUB.geo.lat},${CLUB.geo.lng}&z=17&hl=${lang}&output=embed`;
 
@@ -59,316 +98,33 @@ const ICONS = {
   shield: `<svg viewBox="0 0 24 24" ${STROKE} aria-hidden="true"><path d="M12 3 5 6v5.2c0 4.4 2.9 8 7 9.8 4.1-1.8 7-5.4 7-9.8V6Z"/><path d="M12 8.5v4M12 15.5v.3"/></svg>`,
   lock: `<svg viewBox="0 0 24 24" ${STROKE} aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5M12 14.5v2.5"/></svg>`,
   car: `<svg viewBox="0 0 24 24" ${STROKE} aria-hidden="true"><path d="M4 15.5v-3.2L6 7.6A2 2 0 0 1 7.8 6.4h8.4A2 2 0 0 1 18 7.6l2 4.7v3.2"/><rect x="3" y="12.3" width="18" height="5.2" rx="1.6"/><path d="M6.5 17.5v2M17.5 17.5v2M6.5 15h1.5M16 15h1.5"/></svg>`,
+  globe: `<svg viewBox="0 0 24 24" ${STROKE} aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3Z"/></svg>`,
   info: `<svg viewBox="0 0 24 24" ${STROKE} aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.8v.4"/></svg>`,
 };
 const icon = (name) => ICONS[name];
+// Directional arrow: mirrored in right-to-left layouts.
+ICONS.arrow = ICONS.arrow.replace('<svg ', '<svg class="icon-flip" ');
 
 /* ---------- images ---------- */
 function srcset(slug, ext) {
-  return IMAGES[slug].widths.map((w) => `/assets/img/${slug}-${w}.${ext} ${w}w`).join(', ');
+  return IMAGES[slug].widths.map((w) => `${asset(`/assets/img/${slug}-${w}.${ext}`)} ${w}w`).join(', ');
 }
 function picture(slug, { alt, sizes, eager = false }) {
   const { widths, ratio } = IMAGES[slug];
   const max = widths.at(-1);
   const fallback = widths[Math.min(1, widths.length - 1)];
   const loading = eager ? 'fetchpriority="high" decoding="async"' : 'loading="lazy" decoding="async"';
-  return `<picture><source type="image/avif" srcset="${srcset(slug, 'avif')}" sizes="${sizes}"><source type="image/webp" srcset="${srcset(slug, 'webp')}" sizes="${sizes}"><img src="/assets/img/${slug}-${fallback}.jpg" srcset="${srcset(slug, 'jpg')}" sizes="${sizes}" width="${max}" height="${Math.round(max * ratio)}" alt="${esc(alt)}" ${loading}></picture>`;
+  return `<picture><source type="image/avif" srcset="${srcset(slug, 'avif')}" sizes="${sizes}"><source type="image/webp" srcset="${srcset(slug, 'webp')}" sizes="${sizes}"><img src="${asset(`/assets/img/${slug}-${fallback}.jpg`)}" srcset="${srcset(slug, 'jpg')}" sizes="${sizes}" width="${max}" height="${Math.round(max * ratio)}" alt="${esc(alt)}" ${loading}></picture>`;
 }
 const LOGO = (size, alt = '', eager = false) =>
-  `<img src="/assets/img/logo-${size <= 52 ? 96 : size <= 96 ? 192 : 384}.webp" width="${size}" height="${size}" alt="${esc(alt)}"${eager ? '' : ' loading="lazy"'} decoding="async">`;
+  `<img src="${asset(`/assets/img/logo-${size <= 52 ? 96 : size <= 96 ? 192 : 384}.webp`)}" width="${size}" height="${size}" alt="${esc(alt)}"${eager ? '' : ' loading="lazy"'} decoding="async">`;
 
 /* ---------- copy ---------- */
-const T = {
-  es: {
-    lang: 'es', locale: 'es_ES', altLocale: 'en_GB', path: '/', altPath: '/en/',
-    title: 'Green Rabbit | Cannabis Social Club Calpe · Club Cannábico',
-    description: `Green Rabbit, asociación cannábica privada en Calpe (Alicante). Cannabis social club solo para socios mayores de ${AGE} años: admisión, horario y ubicación.`,
-    ogAlt: 'Logotipo de Green Rabbit, Cannabis Social Club en Calpe, sobre una imagen ilustrativa de una zona lounge',
-    skip: 'Saltar al contenido',
-    nav: [['about', 'La asociación'], ['membership', 'Membresía'], ['how-it-works', 'Cómo funciona'], ['location', 'Ubicación'], ['faq', 'FAQ']],
-    navLabel: 'Navegación principal',
-    menu: 'Menú',
-    illustrative: 'Imagen ilustrativa',
-    langLabel: 'Idioma',
-    home: 'Inicio',
-    gate: {
-      title: `¿Tienes ${AGE} años o más?`,
-      text: `Este sitio informa sobre una asociación cannábica privada y está dirigido exclusivamente a personas mayores de ${AGE} años.`,
-      yes: `Sí, tengo ${AGE} o más`, no: 'No',
-      deniedTitle: 'Lo sentimos',
-      deniedText: `Este sitio es solo para personas mayores de ${AGE} años.`,
-      back: 'Volver',
-    },
-    hero: {
-      eyebrow: 'Asociación cannábica · Calp, Alicante',
-      h1: 'Cannabis Social Club en Calpe',
-      sub: `Asociación privada sin ánimo de lucro. Solo socios, mayores de ${AGE} años.`,
-      cta1: 'Cómo hacerse socio', cta2: 'Ubicación y horario',
-      mapsLink: 'Ver la ficha en Google Maps',
-      rating: 'en Google',
-      ratingLabel: (r) => `Valoración ${r.replace('.', ',')} de 5 en Google. Ver la ficha en Google Maps`,
-      alt: 'Personas conversando en una zona lounge con sofás y pantalla de proyección (imagen ilustrativa)',
-    },
-    quick: { address: 'Dirección', hours: 'Horario para socios', daily: 'Todos los días', directions: 'Cómo llegar' },
-    about: {
-      eyebrow: 'La asociación',
-      h2: 'Qué es un club social de cannabis en Calpe',
-      lead: 'Green Rabbit es una asociación privada y sin ánimo de lucro, inscrita en el Registro de Asociaciones de la Comunitat Valenciana.',
-      body: 'Reúne a personas adultas que ya son consumidoras de cannabis y que han decidido organizarse de forma responsable, privada y dentro del marco asociativo.',
-      notTitle: 'Lo que no somos',
-      nots: [
-        ['no', 'No somos una tienda, un bar ni un coffee shop'],
-        ['no', 'No hay venta al público'],
-        ['no', 'Sin visitantes de paso ni acceso turístico o puntual'],
-        ['key', 'El local está reservado a los socios'],
-      ],
-      pillarIcons: ['heart', 'sprout', 'home', 'key'],
-      pillars: [
-        ['Sin ánimo de lucro', 'Las aportaciones de los socios se destinan únicamente a sostener la actividad de la asociación.'],
-        ['Cultivo compartido', 'Un modelo de autoabastecimiento colectivo, en circuito cerrado y pensado solo para socios adultos.'],
-        ['Consumo solo en el local', 'El consumo se realiza exclusivamente dentro de nuestras instalaciones privadas, nunca en la vía pública.'],
-        ['Solo socios', 'Sin venta, sin acceso para turistas y sin compras de paso. Para entrar hay que ser socio.'],
-      ],
-      spaceEyebrow: 'El espacio',
-      spaceH2: 'Un club social en el centro de Calp',
-      spaceLead: 'Un local amplio y cuidado para desconectar, trabajar con calma o compartir la tarde con otros socios.',
-      imagesNote: 'Imágenes ilustrativas: no muestran el interior real del local.',
-      space: [
-        ['lounge', 'Salón lounge', 'Sofás amplios, luz cálida y una gran pantalla para ver cine, deporte o simplemente charlar.', 'Zona lounge con sofás, luz cálida y pantalla de proyección (imagen ilustrativa)'],
-        ['bar', 'Barra y rincón de café', 'Una barra con taburetes que hace de punto de encuentro del club.', 'Barra con taburetes y zona de café (imagen ilustrativa)'],
-        ['games-room', 'Sala de juegos', 'Consolas, pantallas y sillones para partidas entre socios.', 'Sala de juegos con consolas y proyector (imagen ilustrativa)'],
-        ['board-games', 'Juegos de mesa', 'Cartas y juegos de mesa para las tardes en grupo.', 'Grupo de personas jugando a un juego de mesa (imagen ilustrativa)'],
-        ['workspace', 'Rincón tranquilo', 'Mesas cómodas y buena luz para leer o trabajar con el portátil.', 'Persona trabajando con un portátil en una zona tranquila (imagen ilustrativa)'],
-        ['cinema', 'Cine y eventos', 'Sesiones de cine, retransmisiones y eventos internos para socios.', 'Sesión de cine frente a una pantalla grande (imagen ilustrativa)'],
-      ],
-    },
-    membership: {
-      eyebrow: 'Membresía',
-      h2: 'Cómo hacerse socio del club cannábico en Calpe',
-      lead: 'La admisión es solo por referencia de un socio actual y requiere la aprobación de la asociación.',
-      chips: ['No es inmediata', 'Sin pases de un día', 'Sin membresías temporales'],
-      steps: [
-        ['Identificación', 'Para iniciar la solicitud debes identificarte con tu DNI, NIE o pasaporte en vigor. Comprobamos tu identidad y tu edad.'],
-        ['Solicitud con aval de un socio', 'Rellenas la solicitud de admisión. Tu solicitud debe estar avalada por una persona que ya sea socia de la asociación.'],
-        ['Aprobación por la asociación', 'La asociación estudia cada solicitud con calma; la admisión nunca es inmediata. Solo si se aprueba quedas inscrito como socio, y a partir de entonces puedes acceder al local.'],
-      ],
-      reqTitle: 'Requisitos',
-      reqs: [
-        ['age', `Tener ${AGE} años o más`],
-        ['idcard', 'Documento de identidad válido: DNI, NIE o pasaporte'],
-        ['referral', 'Aval de un socio actual de la asociación'],
-        ['document', 'Aceptar los estatutos y respetar las normas de la casa'],
-      ],
-      contactTitle: '¿Dudas sobre la admisión?',
-      contact: 'Escríbenos por WhatsApp o por correo electrónico.',
-    },
-    law: {
-      eyebrow: 'Marco legal',
-      h2: 'Cómo funciona un club de cannabis en España',
-      lead: 'Un resumen informativo del marco en el que operan las asociaciones cannábicas.',
-      items: [
-        ['Consumo privado', 'El consumo privado entre adultos no es delito', 'En España, el consumo personal de cannabis por parte de adultos en el ámbito privado no está tipificado como delito en el Código Penal.'],
-        ['LO 1/2002', 'Derecho de asociación', 'Las asociaciones se constituyen al amparo de la Ley Orgánica 1/2002, reguladora del derecho de asociación, y se inscriben en el registro autonómico correspondiente.'],
-        ['LO 4/2015', 'Consumo en la vía pública', 'El consumo y la tenencia en lugares públicos se sancionan como infracción administrativa grave según la Ley Orgánica 4/2015, de protección de la seguridad ciudadana.'],
-        ['Nuestro modelo', 'Circuito cerrado', 'Sin venta al público y sin publicidad. Solo socios mayores de edad, con consumo exclusivamente dentro del local.'],
-      ],
-      disclaimer: 'Información general y divulgativa. No constituye asesoramiento jurídico.',
-    },
-    location: {
-      eyebrow: 'Ubicación y horario',
-      h2: 'Dónde estamos en Calpe',
-      lead: 'En el centro de Calp, a pocos pasos del paseo marítimo. Acceso exclusivo para socios.',
-      byCar: 'En coche',
-      travel: [['Altea · Benissa', '10–15 min'], ['Moraira', 'unos 20 min'], ['Benidorm', 'unos 25 min']],
-      hoursSummary: 'Todos los días',
-      hoursMore: 'Ver horario por días',
-      address: 'Dirección', hours: 'Horario de apertura (socios)', contact: 'Contacto',
-      directions: 'Cómo llegar',
-      days: 'Día', time: 'Horario',
-      mapAlt: 'Mapa de la ubicación de Green Rabbit en Carrer de Joan de Garay, Calp',
-      mapLoad: 'Cargar Google Maps',
-      mapNote: 'Al cargar el mapa se conectará con Google, que puede usar cookies. Más información en la <a href="/cookies/">política de cookies</a>.',
-      mapTitle: 'Mapa de Google con la ubicación de Green Rabbit en Calpe',
-    },
-    faqTitle: 'Preguntas frecuentes sobre el cannabis en Calpe',
-    faqEyebrow: 'FAQ',
-    faq: [
-      ['¿Pueden hacerse socios los turistas?',
-        '<p>No ofrecemos acceso a turistas ni a visitantes de paso. No hay acceso inmediato, pases de un día ni membresías temporales. La admisión es solo por referencia de un socio actual y requiere la aprobación de la asociación, que estudia cada solicitud según sus estatutos. Sin el aval de un socio no es posible solicitarla.</p>'],
-      ['¿Es legal el cannabis en Calpe y en España?',
-        '<p>El consumo privado por parte de adultos no es delito en España. La venta y el tráfico sí están prohibidos, y el consumo o la tenencia en la vía pública se sancionan administrativamente (Ley Orgánica 4/2015). Las asociaciones cannábicas funcionan como entidades privadas sin ánimo de lucro bajo el derecho de asociación. En Calpe rigen las mismas normas que en el resto del país.</p>'],
-      ['¿Se puede comprar marihuana en Calpe?',
-        '<p>No. En España no existe venta legal de cannabis, ni en Calpe ni en ningún otro sitio. Las asociaciones como Green Rabbit son privadas y solo para socios: no venden al público, no atienden compras de paso y no hacen envíos.</p>'],
-      ['¿Qué necesito para hacerme socio?',
-        `<p>Tener ${AGE} años o más, identificarte con tu DNI, NIE o pasaporte en vigor, contar con el aval de un socio actual y rellenar la solicitud de admisión. La asociación estudia cada solicitud y comunica su decisión; la admisión no es inmediata. <a href="#membership">Ver los tres pasos</a>.</p>`],
-      ['¿Cuál es la edad mínima?',
-        `<p>${AGE} años. Comprobamos la edad con un documento oficial en vigor antes de tramitar cualquier solicitud.</p>`],
-      ['¿Dónde estáis y qué horario tenéis?',
-        `<p>Estamos en ${A.street}, ${A.postalCode} ${A.localityDisplay}, ${A.province}. El horario de apertura para socios es todos los días de ${HOURS}. <a href="${esc(CLUB.mapsUrl)}" rel="noopener" target="_blank">Abrir en Google Maps</a>.</p>`],
-      ['¿Puedo consumir fuera del club?',
-        '<p>Las normas de la asociación establecen que el consumo se realiza únicamente dentro del local. Fuera, el consumo en la vía pública está sancionado por la Ley Orgánica 4/2015. Pedimos a todos los socios respeto por los vecinos y por el entorno.</p>'],
-      ['¿Estáis cerca de Altea, Benidorm o Moraira?',
-        '<p>Estamos en el centro de Calp, en la Costa Blanca: a unos 25 minutos de Benidorm, a 10–15 minutos de Altea y Benissa y a unos 20 minutos de Moraira. El proceso de admisión es el mismo para todos, vengas de donde vengas: por referencia de un socio y con aprobación de la asociación.</p>'],
-    ],
-    footer: {
-      visit: 'Dirección', contact: 'Contacto', follow: 'Síguenos',
-      registry: `Inscrita en el ${CLUB.registry.name} con el <span class="nowrap">n.º ${CLUB.registry.number}</span>.`,
-      daily: 'Todos los días',
-      note: `Asociación privada sin ánimo de lucro. Este sitio tiene carácter informativo y no promueve ni publicita el consumo de cannabis. Acceso al local solo para socios mayores de ${AGE} años.`,
-      legal: [['/aviso-legal/', 'Aviso legal'], ['/privacidad/', 'Política de privacidad'], ['/cookies/', 'Política de cookies']],
-      rights: 'Todos los derechos reservados.',
-    },
-    brandPanel: { sub: 'Asociación privada · Calp', tag: 'Solo socios' },
-    spaceTabs: 'Elige un espacio',
-    faqAside: ['¿Tienes otra pregunta?', 'Escríbenos por WhatsApp'],
-    social: { instagram: 'Green Rabbit en Instagram', tiktok: 'Green Rabbit en TikTok', whatsapp: 'Escribir por WhatsApp' },
-  },
 
-  en: {
-    lang: 'en', locale: 'en_GB', altLocale: 'es_ES', path: '/en/', altPath: '/',
-    title: 'Green Rabbit | Cannabis Social Club in Calpe · Members Only',
-    description: `Green Rabbit is a private cannabis social club in Calpe, Costa Blanca. Members only, ${AGE}+. How membership works, opening hours, location and FAQ.`,
-    ogAlt: 'Green Rabbit Cannabis Social Club in Calpe logo over an illustrative image of a lounge area',
-    skip: 'Skip to content',
-    nav: [['about', 'About'], ['membership', 'Membership'], ['how-it-works', 'How it works'], ['location', 'Location'], ['faq', 'FAQ']],
-    navLabel: 'Main navigation',
-    menu: 'Menu',
-    illustrative: 'Illustrative image',
-    langLabel: 'Language',
-    home: 'Home',
-    gate: {
-      title: `Are you ${AGE} or over?`,
-      text: `This website provides information about a private cannabis association and is intended only for adults aged ${AGE} and over.`,
-      yes: `Yes, I'm ${AGE} or over`, no: 'No',
-      deniedTitle: 'Sorry',
-      deniedText: `This website is only for people aged ${AGE} and over.`,
-      back: 'Go back',
-    },
-    hero: {
-      eyebrow: 'Cannabis association · Calp, Alicante',
-      h1: 'Cannabis Social Club in Calpe',
-      sub: `A private, non-profit association. Members only, aged ${AGE} and over.`,
-      cta1: 'How to become a member', cta2: 'Location & hours',
-      mapsLink: 'View our Google Maps listing',
-      rating: 'on Google',
-      ratingLabel: (r) => `Rated ${r} out of 5 on Google. View the listing on Google Maps`,
-      alt: 'People chatting in a lounge area with sofas and a projection screen (illustrative image)',
-    },
-    quick: { address: 'Address', hours: 'Hours (members)', daily: 'Every day', directions: 'Get directions' },
-    about: {
-      eyebrow: 'The association',
-      h2: 'What a cannabis social club in Calpe is',
-      lead: 'Green Rabbit is a private, non-profit association registered with the Associations Registry of the Valencian Community.',
-      body: 'It brings together adults who already use cannabis and have chosen to organise themselves responsibly, privately and within the legal framework for associations.',
-      notTitle: 'What we are not',
-      nots: [
-        ['no', 'Not a shop, a bar or a coffee shop'],
-        ['no', 'No sale to the public'],
-        ['no', 'No walk-in service and no tourist or one-off access'],
-        ['key', 'The premises are for members only'],
-      ],
-      pillarIcons: ['heart', 'sprout', 'home', 'key'],
-      pillars: [
-        ['Non-profit', "Members' contributions go solely towards running the association."],
-        ['Shared cultivation', 'A collective, closed-circuit self-supply model intended only for adult members.'],
-        ['Consumption on site only', 'Consumption takes place exclusively inside our private premises, never in public.'],
-        ['Members only', 'No sales, no tourist access and no walk-in purchases. You have to be a member to come in.'],
-      ],
-      spaceEyebrow: 'The space',
-      spaceH2: 'A social club in the centre of Calp',
-      spaceLead: 'A spacious, carefully designed place to unwind, work in peace or spend the afternoon with other members.',
-      imagesNote: 'Illustrative images: they do not show the actual premises.',
-      space: [
-        ['lounge', 'Lounge', 'Deep sofas, warm light and a big screen for films, sport or simply talking.', 'Lounge area with sofas, warm light and a projection screen (illustrative image)'],
-        ['bar', 'Bar & coffee corner', "A counter with stools that's the club's natural meeting point.", 'Bar counter with stools and a coffee area (illustrative image)'],
-        ['games-room', 'Games room', 'Consoles, screens and armchairs for games between members.', 'Games room with consoles and a projector (illustrative image)'],
-        ['board-games', 'Board games', 'Cards and board games for afternoons in good company.', 'Group of people playing a board game (illustrative image)'],
-        ['workspace', 'Quiet corner', 'Comfortable tables and good light for reading or working on a laptop.', 'Person working on a laptop in a quiet area (illustrative image)'],
-        ['cinema', 'Film nights & events', 'Film screenings, live broadcasts and members-only events.', 'Film screening in front of a big screen (illustrative image)'],
-      ],
-    },
-    membership: {
-      eyebrow: 'Membership',
-      h2: 'How to join our cannabis club in Calpe',
-      lead: 'Membership is by referral from an existing member only and requires approval by the association.',
-      chips: ['Never immediate', 'No day passes', 'No temporary memberships'],
-      steps: [
-        ['Identification', 'To start an application you need to identify yourself with a valid DNI, NIE or passport. We check your identity and age.'],
-        ['Application endorsed by a member', 'Fill in the membership application. It must be endorsed by someone who is already a member of the association.'],
-        ['Approval by the association', 'The association reviews every application carefully; admission is never immediate. Only once it is approved are you registered as a member and able to access the premises.'],
-      ],
-      reqTitle: 'Requirements',
-      reqs: [
-        ['age', `Aged ${AGE} or over`],
-        ['idcard', 'Valid ID: DNI, NIE or passport'],
-        ['referral', 'Endorsement from a current member of the association'],
-        ['document', 'Agreement to the statutes and respect for the house rules'],
-      ],
-      contactTitle: 'Questions about membership?',
-      contact: 'Message us on WhatsApp or by email.',
-    },
-    law: {
-      eyebrow: 'Legal framework',
-      h2: 'How cannabis clubs work in Spain',
-      lead: 'A short, factual overview of the framework cannabis associations operate in.',
-      items: [
-        ['Private use', 'Private use by adults is not a crime', 'In Spain, personal cannabis use by adults in a private setting is not classed as a criminal offence under the Criminal Code.'],
-        ['LO 1/2002', 'Right of association', 'Associations are formed under Organic Law 1/2002 on the right of association and are entered in the relevant regional registry.'],
-        ['LO 4/2015', 'Use in public places', 'Consumption and possession in public places are punishable as a serious administrative offence under Organic Law 4/2015 on public safety.'],
-        ['Our model', 'Closed circuit', 'No public sales and no advertising. Adult members only, with consumption exclusively on the premises.'],
-      ],
-      disclaimer: 'General information only. This is not legal advice.',
-    },
-    location: {
-      eyebrow: 'Location & hours',
-      h2: 'Where to find us in Calpe',
-      lead: 'In the centre of Calp, a short walk from the seafront promenade. Access for members only.',
-      byCar: 'By car',
-      travel: [['Altea · Benissa', '10–15 min'], ['Moraira', 'around 20 min'], ['Benidorm', 'about 25 min']],
-      hoursSummary: 'Every day',
-      hoursMore: 'See daily hours',
-      address: 'Address', hours: 'Opening hours (members)', contact: 'Contact',
-      directions: 'Get directions',
-      days: 'Day', time: 'Hours',
-      mapAlt: 'Map showing Green Rabbit on Carrer de Joan de Garay, Calp',
-      mapLoad: 'Load Google Maps',
-      mapNote: 'Loading the map connects to Google, which may set cookies. See our <a href="/cookies/">cookie policy</a> (in Spanish).',
-      mapTitle: 'Google map showing Green Rabbit in Calpe',
-    },
-    faqTitle: 'Frequently asked questions about cannabis in Calpe',
-    faqEyebrow: 'FAQ',
-    faq: [
-      ['Can tourists join?',
-        "<p>We don't offer access to tourists or passing visitors. There is no immediate access, no day pass and no temporary membership. Membership is by referral from a current member only and requires approval by the association, which reviews each application under its statutes. Without a member's endorsement it isn't possible to apply.</p>"],
-      ['Is cannabis legal in Calpe and in Spain?',
-        '<p>Private use by adults is not a crime in Spain. Selling and trafficking are prohibited, and consumption or possession in public places is subject to administrative fines (Organic Law 4/2015). Cannabis associations operate as private, non-profit organisations under the right of association. The same rules apply in Calpe as in the rest of Spain.</p>'],
-      ['Can I buy weed in Calpe?',
-        "<p>No. There is no legal sale of cannabis in Spain, in Calpe or anywhere else. Associations like Green Rabbit are private and members-only: they don't sell to the public, don't serve walk-in customers and don't deliver.</p>"],
-      ['What do I need to join?',
-        `<p>You need to be ${AGE} or over, identify yourself with a valid DNI, NIE or passport, be endorsed by a current member and fill in the membership application. The association reviews every application and lets you know its decision; admission is not immediate. <a href="#membership">See the three steps</a>.</p>`],
-      ['What is the minimum age?',
-        `<p>${AGE}. We check age against a valid official ID before processing any application.</p>`],
-      ['Where are you and when are you open?',
-        `<p>You'll find us at ${A.street}, ${A.postalCode} ${A.localityDisplay}, ${A.province}, Spain. Opening hours for members are every day, ${HOURS}. <a href="${esc(CLUB.mapsUrl)}" rel="noopener" target="_blank">Open in Google Maps</a>.</p>`],
-      ['Can I consume outside the club?',
-        "<p>The association's rules say consumption takes place only inside the premises. Outside, consumption in public places is sanctioned under Organic Law 4/2015. We ask all members to respect our neighbours and the area.</p>"],
-      ['Are you near Altea, Benidorm or Moraira?',
-        "<p>We're in the centre of Calp on the Costa Blanca: about 25 minutes from Benidorm, 10–15 minutes from Altea and Benissa, and around 20 minutes from Moraira. The membership process is the same for everyone, wherever you're coming from: by referral from a member and with approval by the association.</p>"],
-    ],
-    footer: {
-      visit: 'Address', contact: 'Contact', follow: 'Follow',
-      registry: `Registered with the ${CLUB.registry.name}, <span class="nowrap">no. ${CLUB.registry.number}</span>.`,
-      daily: 'Every day',
-      note: `Private, non-profit association. This website is for information only and does not promote or advertise cannabis use. Entry to the premises is for members aged ${AGE} and over only.`,
-      legal: [['/aviso-legal/', 'Legal notice (ES)'], ['/privacidad/', 'Privacy policy (ES)'], ['/cookies/', 'Cookie policy (ES)']],
-      rights: 'All rights reserved.',
-    },
-    brandPanel: { sub: 'Private association · Calp', tag: 'Members only' },
-    spaceTabs: 'Choose a space',
-    faqAside: ['Another question?', 'Message us on WhatsApp'],
-    social: { instagram: 'Green Rabbit on Instagram', tiktok: 'Green Rabbit on TikTok', whatsapp: 'Message us on WhatsApp' },
-  },
-};
+/* ---------- copy ---------- */
+const CTX = { AGE, A, HOURS: HOURS_HTML, CLUB, esc };
+const T = Object.fromEntries(LANGS.map(({ copy, ...meta }) => [meta.code, { ...meta, ...copy(CTX) }]));
+const HOME_ALTERNATES = [...LANGS.map((l) => [l.hreflang, l.path]), ['x-default', '/']];
 
 /* ---------- structured data ---------- */
 function orgSchema(t) {
@@ -381,8 +137,8 @@ function orgSchema(t) {
     taxID: CLUB.cif,
     description: t.description,
     url: abs('/'),
-    logo: { '@type': 'ImageObject', url: abs('/assets/img/logo-512.png'), width: 512, height: 512 },
-    image: abs('/assets/img/logo-512.png'),
+    logo: { '@type': 'ImageObject', url: abs(asset('/assets/img/logo-512.png')), width: 512, height: 512 },
+    image: abs(asset('/assets/img/logo-512.png')),
     telephone: CLUB.phone,
     email: CLUB.email,
     address: {
@@ -416,14 +172,14 @@ function homeSchema(t) {
         '@id': abs('/#website'),
         url: abs('/'),
         name: CLUB.brandName,
-        inLanguage: ['es', 'en'],
+        inLanguage: LANGS.map((l) => l.hreflang),
         publisher: { '@id': abs('/#organization') },
       },
       {
         '@type': 'FAQPage',
         '@id': `${pageUrl}#faq`,
         url: pageUrl,
-        inLanguage: t.lang,
+        inLanguage: t.hreflang,
         mainEntity: t.faq.map(([q, a]) => ({
           '@type': 'Question',
           name: q,
@@ -446,13 +202,13 @@ function head({ t, title, description, path, alternates, schema, preloadHero = f
     ? alternates.map(([l, p]) => `<link rel="alternate" hreflang="${l}" href="${abs(p)}">`).join('\n')
     : '';
   const heroPreload = preloadHero
-    ? `<link rel="preload" as="image" type="image/avif" imagesrcset="${srcset('lounge', 'avif')}" imagesizes="${HERO_SIZES}" fetchpriority="high">`
+    ? `<link rel="preload" as="image" type="image/avif" imagesrcset="${srcset('hero-lounge', 'avif')}" imagesizes="${HERO_SIZES}" fetchpriority="high">`
     : '';
   const gateCheck = gate
     ? `;try{if(localStorage.getItem('gr-age-ok')!=='1')d.classList.add('age-pending')}catch(e){d.classList.add('age-pending')}`
     : '';
   return `<!DOCTYPE html>
-<html lang="${t.lang}">
+<html lang="${t.lang}" dir="${t.dir}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -462,13 +218,13 @@ ${noindex ? '<meta name="robots" content="noindex, follow">' : '<meta name="robo
 <link rel="canonical" href="${url}">
 ${hreflang}
 <script>var d=document.documentElement;d.classList.add('js')${gateCheck}</script>
-<link rel="preload" href="/assets/fonts/cormorant-500.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="${asset(SERIF_PRELOAD[t.code] || '/assets/fonts/cormorant-500.woff2')}" as="font" type="font/woff2" crossorigin>
 ${heroPreload}
 <style>${CSS}</style>
 <meta name="theme-color" content="#f8f6f1">
-<link rel="icon" href="/favicon.ico" sizes="48x48">
-<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" href="${asset('/favicon.ico')}" sizes="48x48">
+<link rel="icon" href="${asset('/favicon-32.png')}" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="${asset('/apple-touch-icon.png')}">
 <link rel="manifest" href="/site.webmanifest">
 <meta name="geo.region" content="${A.regionCode}">
 <meta name="geo.placename" content="${A.locality}">
@@ -479,16 +235,16 @@ ${heroPreload}
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:url" content="${url}">
-<meta property="og:image" content="${abs('/og-image.jpg')}">
+<meta property="og:image" content="${abs(asset('/og-image.jpg'))}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="${esc(t.ogAlt)}">
 <meta property="og:locale" content="${t.locale}">
-<meta property="og:locale:alternate" content="${t.altLocale}">
+${LANGS.filter((l) => l.code !== t.code).map((l) => `<meta property="og:locale:alternate" content="${l.locale}">`).join('\n')}
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${esc(title)}">
 <meta name="twitter:description" content="${esc(description)}">
-<meta name="twitter:image" content="${abs('/og-image.jpg')}">
+<meta name="twitter:image" content="${abs(asset('/og-image.jpg'))}">
 <meta name="twitter:image:alt" content="${esc(t.ogAlt)}">
 ${schema ? jsonld(schema) : ''}
 </head>`;
@@ -499,13 +255,17 @@ function socialLinks(t) {
 <a class="icon-link" href="${CLUB.tiktok}" rel="noopener" target="_blank" aria-label="${esc(t.social.tiktok)}">${ICONS.tiktok}</a>`;
 }
 
-function header(t, { onHome, langPaths }) {
+function langMenu(t) {
+  return `<details class="lang-menu">
+<summary aria-label="${esc(t.langLabel)}: ${esc(t.name)}">${ICONS.globe}<span>${t.code.toUpperCase()}</span></summary>
+<ul>
+${LANGS.map((l) => `<li><a href="${l.path}" hreflang="${l.hreflang}" lang="${l.lang}"${l.code === t.code ? ' aria-current="page"' : ''}>${l.name}</a></li>`).join('\n')}
+</ul>
+</details>`;
+}
+
+function header(t, { onHome }) {
   const base = onHome ? '' : t.path;
-  const [esPath, enPath] = langPaths;
-  const langItem = (code, label, path) =>
-    code === t.lang
-      ? `<span aria-current="true" lang="${code}">${label}<span class="visually-hidden"> (${code === 'es' ? 'idioma actual' : 'current language'})</span></span>`
-      : `<a href="${path}" hreflang="${code}" lang="${code}">${label}<span class="visually-hidden"> ${code === 'es' ? '(Español)' : '(English)'}</span></a>`;
   return `<a class="skip-link" href="#main">${t.skip}</a>
 <header class="site-header">
 <div class="wrap header-row">
@@ -516,7 +276,7 @@ ${t.nav.map(([id, label]) => `<li><a href="${base}#${id}">${label}</a></li>`).jo
 </ul>
 <div class="nav-social">${socialLinks(t)}</div>
 </nav>
-<div class="lang-switch" role="group" aria-label="${t.langLabel}">${langItem('es', 'ES', esPath)}<span class="sep" aria-hidden="true"></span>${langItem('en', 'EN', enPath)}</div>
+${langMenu(t)}
 <div class="header-social">${socialLinks(t)}</div>
 <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="site-nav" aria-label="${t.menu}"><span class="menu-icon" aria-hidden="true"><span></span></span><span class="menu-label" aria-hidden="true">${t.menu}</span></button>
 </div>
@@ -534,14 +294,14 @@ function footer(t) {
 </div>
 <div>
 <h2>${f.visit}</h2>
-<address>${A.street}<br>${A.postalCode} ${A.localityDisplay}, ${A.province}<br>${A.countryName[t.lang]}</address>
-<p class="footer-hours">${f.daily}: ${HOURS}</p>
+<address>${bdi(A.street)}<br>${bdi(`${A.postalCode} ${A.localityDisplay}, ${A.province}`)}<br>${t.country}</address>
+<p class="footer-hours">${f.daily}: ${HOURS_HTML}</p>
 </div>
 <div>
 <h2>${f.contact}</h2>
 <ul class="footer-links">
-<li><a href="tel:${CLUB.phone}">${CLUB.phoneDisplay}</a></li>
-<li><a href="mailto:${CLUB.email}">${CLUB.email}</a></li>
+<li><a href="tel:${CLUB.phone}">${bdi(CLUB.phoneDisplay)}</a></li>
+<li><a href="mailto:${CLUB.email}">${bdi(CLUB.email)}</a></li>
 <li><a href="${CLUB.whatsapp}" rel="noopener" target="_blank">WhatsApp</a></li>
 </ul>
 </div>
@@ -603,7 +363,7 @@ function homePage(t) {
   const pad = (n) => String(n).padStart(2, '0');
 
   const body = `<body>
-${header(t, { onHome: true, langPaths: ['/', '/en/'] })}
+${header(t, { onHome: true })}
 <main id="main">
 <section class="hero" aria-labelledby="hero-title">
 <figure class="hero-media">${picture('hero-lounge', { alt: h.alt, sizes: HERO_SIZES, eager: true })}<figcaption class="media-label">${t.illustrative}</figcaption></figure>
@@ -624,8 +384,8 @@ ${googleLink}
 <div class="quick-info">
 <div class="wrap">
 <div class="qi-card">
-<div class="qi-item">${ICONS.pin}<div><span class="qi-label">${q.address}</span><span class="qi-value">${A.street}, ${A.localityDisplay}</span></div></div>
-<div class="qi-item">${ICONS.clock}<div><span class="qi-label">${q.hours}</span><span class="qi-value">${q.daily} · ${HOURS}</span></div></div>
+<div class="qi-item">${ICONS.pin}<div><span class="qi-label">${q.address}</span><span class="qi-value">${bdi(`${A.street}, ${A.localityDisplay}`)}</span></div></div>
+<div class="qi-item">${ICONS.clock}<div><span class="qi-label">${q.hours}</span><span class="qi-value">${q.daily} · ${HOURS_HTML}</span></div></div>
 ${directionsBtn(q.directions)}
 </div>
 </div>
@@ -677,7 +437,7 @@ ${ab.space.map(([slug, title, text, alt], i) => `<figure class="space-panel${i =
 <ul class="chips">${m.chips.map((c) => `<li>${ICONS.no}${c}</li>`).join('')}</ul>
 </div>
 <div class="brand-panel">
-<img src="/assets/img/logo-384.webp" width="200" height="200" alt="${esc(CLUB.shortName)}" loading="lazy" decoding="async">
+<img src="${asset('/assets/img/logo-384.webp')}" width="200" height="200" alt="${esc(CLUB.shortName)}" loading="lazy" decoding="async">
 <p class="brand-panel-name">${CLUB.shortName}</p>
 <p class="brand-panel-sub">${t.brandPanel.sub}</p>
 <p class="brand-panel-tag">${t.brandPanel.tag}</p>
@@ -696,7 +456,7 @@ ${iconList(m.reqs)}
 <p>${m.contact}</p>
 <div class="btn-row">
 <a class="btn btn-primary" href="${CLUB.whatsapp}" rel="noopener" target="_blank">${ICONS.whatsapp}WhatsApp</a>
-<a class="btn btn-secondary btn-wrap" href="mailto:${CLUB.email}">${ICONS.mail}${CLUB.email}</a>
+<a class="btn btn-secondary btn-wrap" href="mailto:${CLUB.email}">${ICONS.mail}${bdi(CLUB.email)}</a>
 </div>
 </div>
 </div>
@@ -720,30 +480,31 @@ ${law.items.map(([tag, title, text], i) => `<li class="card">${card(LAW_ICONS[i]
 <div class="wrap">
 <div class="section-head section-head-split">
 <div><p class="eyebrow">${loc.eyebrow}</p><h2 id="location-title">${loc.h2}</h2></div>
-<div>
 <p class="lead">${loc.lead}</p>
-<ul class="chips chips-travel" aria-label="${esc(loc.byCar)}">${loc.travel.map(([place, time]) => `<li>${ICONS.car}<strong>${place}</strong> ${time}</li>`).join('')}</ul>
 </div>
+<div class="travel-row">
+<p class="travel-label">${ICONS.car}${loc.byCar}</p>
+<ul class="chips chips-travel" aria-label="${esc(loc.byCar)}">${loc.travel.map(([place, time]) => `<li><strong>${place}</strong> ${time}</li>`).join('')}</ul>
 </div>
 <div class="location-grid">
 <div class="visit-card">
 <div class="visit-block">
 <span class="qi-label">${loc.address}</span>
-<address class="address-lg">${A.street}<br>${A.postalCode} ${A.localityDisplay}, ${A.province}<br>${A.countryName[t.lang]}</address>
+<address class="address-lg">${bdi(A.street)}<br>${bdi(`${A.postalCode} ${A.localityDisplay}, ${A.province}`)}<br>${t.country}</address>
 ${directionsBtn(loc.directions)}
 </div>
 <div class="visit-block visit-hours">
 <span class="icon-badge icon-badge-lg">${ICONS.clock}</span>
 <div>
 <span class="qi-label">${loc.hours}</span>
-<span class="hours-big">${HOURS}</span>
+<span class="hours-big">${HOURS_HTML}</span>
 <span class="hours-days">${loc.hoursSummary}</span>
 <details class="hours-more">
 <summary>${loc.hoursMore}</summary>
 <table class="hours-table">
 <thead class="visually-hidden"><tr><th scope="col">${loc.days}</th><th scope="col">${loc.time}</th></tr></thead>
 <tbody>
-${DAYS.map((d) => `<tr data-day="${d[0]}"><th scope="row">${t.lang === 'es' ? d[2] : d[3]}</th><td>${HOURS}</td></tr>`).join('\n')}
+${DAYS.map((d, i) => `<tr data-day="${d[0]}"><th scope="row">${t.days[i]}</th><td>${HOURS_HTML}</td></tr>`).join('\n')}
 </tbody>
 </table>
 </details>
@@ -752,15 +513,15 @@ ${DAYS.map((d) => `<tr data-day="${d[0]}"><th scope="row">${t.lang === 'es' ? d[
 <div class="visit-block">
 <span class="qi-label">${loc.contact}</span>
 <ul class="contact-list">
-<li><a href="tel:${CLUB.phone}">${ICONS.phone}${CLUB.phoneDisplay}</a></li>
+<li><a href="tel:${CLUB.phone}">${ICONS.phone}${bdi(CLUB.phoneDisplay)}</a></li>
 <li><a href="${CLUB.whatsapp}" rel="noopener" target="_blank">${ICONS.whatsapp}WhatsApp</a></li>
-<li><a href="mailto:${CLUB.email}">${ICONS.mail}${CLUB.email}</a></li>
-<li><a href="${CLUB.instagram}" rel="noopener" target="_blank">${ICONS.instagram}Instagram ${CLUB.handle}</a></li>
-<li><a href="${CLUB.tiktok}" rel="noopener" target="_blank">${ICONS.tiktok}TikTok ${CLUB.handle}</a></li>
+<li><a href="mailto:${CLUB.email}">${ICONS.mail}${bdi(CLUB.email)}</a></li>
+<li><a href="${CLUB.instagram}" rel="noopener" target="_blank">${ICONS.instagram}${bdi(`Instagram ${CLUB.handle}`)}</a></li>
+<li><a href="${CLUB.tiktok}" rel="noopener" target="_blank">${ICONS.tiktok}${bdi(`TikTok ${CLUB.handle}`)}</a></li>
 </ul>
 </div>
 </div>
-<figure class="map" data-map-src="${esc(MAP_EMBED(t.lang))}" data-map-title="${esc(loc.mapTitle)}">
+<figure class="map" data-map-src="${esc(MAP_EMBED(t.code))}" data-map-title="${esc(loc.mapTitle)}">
 <div class="map-media">
 ${picture('map', { alt: loc.mapAlt, sizes: '(min-width: 960px) 640px, calc(100vw - 2.25rem)' })}
 <span class="map-attrib">© <a href="https://www.openstreetmap.org/copyright" rel="noopener" target="_blank">OpenStreetMap</a></span>
@@ -795,7 +556,7 @@ ${ageGate(t)}
 
   return head({
     t, title: t.title, description: t.description, path: t.path,
-    alternates: [['es', '/'], ['en', '/en/'], ['x-default', '/']],
+    alternates: HOME_ALTERNATES,
     schema: homeSchema(t), preloadHero: true, gate: true,
   }) + '\n' + body;
 }
@@ -887,7 +648,7 @@ ${OWNER_DL}
 function legalPage(p) {
   const t = T.es;
   const body = `<body>
-${header(t, { onHome: false, langPaths: ['/', '/en/'] })}
+${header(t, { onHome: false })}
 <main id="main" class="legal-main">
 <div class="wrap">
 <p class="eyebrow">${CLUB.shortName} · ${A.locality}</p>
@@ -910,7 +671,7 @@ ${footer(t)}
 function notFoundPage() {
   const t = T.es;
   const body = `<body>
-${header(t, { onHome: false, langPaths: ['/', '/en/'] })}
+${header(t, { onHome: false })}
 <main id="main" class="legal-main">
 <div class="wrap">
 <h1>Página no encontrada</h1>
@@ -927,8 +688,8 @@ ${footer(t)}
 
 /* ---------- sitemap / robots / manifest ---------- */
 function sitemap() {
-  const alt = `<xhtml:link rel="alternate" hreflang="es" href="${abs('/')}"/><xhtml:link rel="alternate" hreflang="en" href="${abs('/en/')}"/><xhtml:link rel="alternate" hreflang="x-default" href="${abs('/')}"/>`;
-  const homes = ['/', '/en/'].map((p) => `<url><loc>${abs(p)}</loc><lastmod>${LEGAL_UPDATED}</lastmod>${alt}</url>`);
+  const alt = HOME_ALTERNATES.map(([l, p]) => `<xhtml:link rel="alternate" hreflang="${l}" href="${abs(p)}"/>`).join('');
+  const homes = LANGS.map((l) => `<url><loc>${abs(l.path)}</loc><lastmod>${LEGAL_UPDATED}</lastmod>${alt}</url>`);
   const legal = LEGAL.map((p) => `<url><loc>${abs(p.path)}</loc><lastmod>${LEGAL_UPDATED}</lastmod></url>`);
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
@@ -951,8 +712,8 @@ const MANIFEST = JSON.stringify({
   background_color: '#f8f6f1',
   theme_color: '#f8f6f1',
   icons: [
-    { src: '/icon-192.png', sizes: '192x192', type: 'image/png' },
-    { src: '/icon-512.png', sizes: '512x512', type: 'image/png' },
+    { src: asset('/icon-192.png'), sizes: '192x192', type: 'image/png' },
+    { src: asset('/icon-512.png'), sizes: '512x512', type: 'image/png' },
   ],
 }, null, 2);
 
@@ -965,8 +726,7 @@ async function out(path, content) {
 
 await rm(DIST, { recursive: true, force: true });
 await cp(join(ROOT, 'src/static'), DIST, { recursive: true });
-await out('index.html', homePage(T.es));
-await out('en/index.html', homePage(T.en));
+for (const l of LANGS) await out(`${l.path.slice(1)}index.html`, homePage(T[l.code]));
 for (const p of LEGAL) await out(p.path + 'index.html', legalPage(p));
 await out('404.html', notFoundPage());
 await out('sitemap.xml', sitemap());
@@ -974,8 +734,8 @@ await out('robots.txt', ROBOTS);
 await out('site.webmanifest', MANIFEST);
 
 // Report SEO lengths and open TODOs.
-for (const t of [T.es, T.en]) {
-  console.log(`[${t.lang}] title ${t.title.length} chars, description ${t.description.length} chars`);
+for (const t of Object.values(T)) {
+  console.log(`[${t.code}] title ${t.title.length} chars, description ${t.description.length} chars`);
 }
 const pending = [...TODO];
 for (const [k, v] of Object.entries(CLUB)) if (typeof v === 'string' && v.includes('TODO')) pending.push(`CLUB.${k}`);

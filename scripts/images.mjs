@@ -63,10 +63,13 @@ await sharp(icon).resize(32).png().toFile(join(OUT, 'favicon-32.png'));
 // Open Graph image (JPEG for maximum crawler compatibility).
 await sharp(join(RAW, 'og.jpg')).jpeg({ quality: 82, mozjpeg: true }).toFile(join(OUT, 'og-image.jpg'));
 
-// Self-hosted fonts (latin subset covers Spanish).
+// Self-hosted fonts: Latin (ES/EN/FR/DE/IT/NL/SV) and Cyrillic (RU).
+// The Arabic heading font is subset separately by scripts/fonts.py.
 const FONT_FILES = {
   'inter-var.woff2': '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2',
   'cormorant-500.woff2': '@fontsource/cormorant-garamond/files/cormorant-garamond-latin-500-normal.woff2',
+  'inter-cyrillic-var.woff2': '@fontsource-variable/inter/files/inter-cyrillic-wght-normal.woff2',
+  'cormorant-cyrillic-500.woff2': '@fontsource/cormorant-garamond/files/cormorant-garamond-cyrillic-500-normal.woff2',
 };
 for (const [name, from] of Object.entries(FONT_FILES)) {
   await copyFile(join(ROOT, 'node_modules', from), join(FONTS, name));

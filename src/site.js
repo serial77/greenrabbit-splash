@@ -32,6 +32,21 @@
     if (desktop.addEventListener) desktop.addEventListener('change', onChange);
   }
 
+  // Language dropdown: a native <details>; JS only adds outside-click and Escape closing.
+  var langMenu = document.querySelector('.lang-menu');
+  if (langMenu) {
+    document.addEventListener('click', function (e) {
+      if (langMenu.open && !langMenu.contains(e.target)) langMenu.open = false;
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && langMenu.open) {
+        langMenu.open = false;
+        langMenu.querySelector('summary').focus();
+      }
+    });
+    if (toggle) toggle.addEventListener('click', function () { langMenu.open = false; });
+  }
+
   // Age gate: an overlay on top of fully rendered content. A tiny inline
   // script in <head> adds .age-pending before first paint when needed.
   var gate = document.getElementById('age-gate');
