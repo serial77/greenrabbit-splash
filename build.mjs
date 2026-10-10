@@ -222,7 +222,7 @@ ${hreflang}
 ${heroPreload}
 <style>${CSS}</style>
 <meta name="theme-color" content="#f8f6f1">
-<meta name="google-site-verification" content="6pi-LSTMxp7Pk1SHpfEjRtMOBicBlpMWfbUPGUcPa4o">
+<meta name="google-site-verification" content="QdFPsn-yQsfOBn7ffB4e7QvxPDMaYBr6cD2ySElKVlg">
 <link rel="icon" href="${asset('/favicon.ico')}" sizes="48x48">
 <link rel="icon" href="${asset('/favicon-32.png')}" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="${asset('/apple-touch-icon.png')}">
