@@ -2,7 +2,7 @@
 // Latin values (address, hours, phone) are isolated with <bdi> so they keep their order.
 export default ({ AGE, A, HOURS, CLUB, esc }) => ({
   days: [`الاثنين`, `الثلاثاء`, `الأربعاء`, `الخميس`, `الجمعة`, `السبت`, `الأحد`],
-  title: `Green Rabbit | نادي القنب الاجتماعي في كالبي · للأعضاء فقط`,
+  title: `القنب في كالبي · نادي Green Rabbit · للأعضاء فقط`,
   description: `Green Rabbit جمعية خاصة للقنب في كالبي على كوستا بلانكا، للأعضاء البالغين ${AGE} سنة فما فوق: طريقة الانضمام، أوقات العمل، العنوان والأسئلة الشائعة.`,
   ogAlt: `شعار Green Rabbit، نادي القنب الاجتماعي في كالبي، فوق صورة توضيحية لصالة استراحة`,
   skip: `الانتقال إلى المحتوى`,

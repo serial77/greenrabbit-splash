@@ -1,7 +1,7 @@
 // Spanish copy. Shared club values come from build.mjs via the context argument.
 export default ({ AGE, A, HOURS, CLUB, esc }) => ({
   days: ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'],
-  title: 'Green Rabbit | Cannabis Social Club Calpe · Club Cannábico',
+  title: `Cannabis Calpe · Club Cannábico Green Rabbit · Solo socios`,
   description: `Green Rabbit, asociación cannábica privada en Calpe (Alicante). Cannabis social club solo para socios mayores de ${AGE} años: admisión, horario y ubicación.`,
   ogAlt: 'Logotipo de Green Rabbit, Cannabis Social Club en Calpe, sobre una imagen ilustrativa de una zona lounge',
   skip: 'Saltar al contenido',
