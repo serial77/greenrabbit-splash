@@ -11,6 +11,12 @@ export default ({ AGE, A, HOURS, CLUB, esc }) => ({
   illustrative: `Illustrativ bild`,
   langLabel: `Språk`,
   home: `Startsida`,
+  consent: {
+    label: `Cookiemeddelande`,
+    text: `Vi använder cookies från Google Analytics för att se hur många som besöker webbplatsen och hur den används. De sätts bara om du godkänner dem.`,
+    accept: `Godkänn`, reject: `Avvisa`,
+    policy: `Cookiepolicy (ES)`, settings: `Cookieinställningar`,
+  },
   gate: {
     title: `Är du ${AGE} år eller äldre?`,
     text: `Den här webbplatsen informerar om en privat cannabisförening och riktar sig endast till personer som är ${AGE} år eller äldre.`,

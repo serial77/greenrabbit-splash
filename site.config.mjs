@@ -42,7 +42,11 @@ export const CLUB = {
 };
 
 // Date shown as "last updated" on the legal pages (ISO yyyy-mm-dd).
-export const LEGAL_UPDATED = '2026-10-09';
+export const LEGAL_UPDATED = '2026-10-10';
+
+// Google Analytics 4 measurement ID. gtag.js loads only after the visitor
+// accepts the cookie banner. null removes the banner and analytics entirely.
+export const GA_ID = 'G-J04D11YX9M';
 
 // Open items. Leave entries here (and visible "TODO" text on the page)
 // until confirmed; never guess legal or contact data.

@@ -11,6 +11,12 @@ export default ({ AGE, A, HOURS, CLUB, esc }) => ({
   illustrative: `Illustratieve afbeelding`,
   langLabel: `Taal`,
   home: `Home`,
+  consent: {
+    label: `Cookiemelding`,
+    text: `We gebruiken cookies van Google Analytics om te zien hoeveel mensen deze site bezoeken en hoe die wordt gebruikt. Ze worden alleen geplaatst als je ze accepteert.`,
+    accept: `Accepteren`, reject: `Weigeren`,
+    policy: `Cookiebeleid (ES)`, settings: `Cookie-instellingen`,
+  },
   gate: {
     title: `Ben je ${AGE} jaar of ouder?`,
     text: `Deze website geeft informatie over een besloten cannabisvereniging en is uitsluitend bedoeld voor personen van ${AGE} jaar en ouder.`,

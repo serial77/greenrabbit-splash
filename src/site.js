@@ -76,6 +76,58 @@
     });
   }
 
+  // Analytics consent: gtag.js is only requested after the visitor accepts.
+  // While the age gate is open the banner stays hidden (see CSS).
+  var consent = document.getElementById('consent');
+  if (consent) {
+    var CONSENT_KEY = 'gr-consent';
+    var gaId = consent.getAttribute('data-ga-id');
+    var gaLoaded = false;
+    var stored = null;
+    try { stored = localStorage.getItem(CONSENT_KEY); } catch (e) { /* storage blocked: ask on every page */ }
+    var loadGa = function () {
+      window['ga-disable-' + gaId] = false;
+      if (gaLoaded) return;
+      gaLoaded = true;
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function () { window.dataLayer.push(arguments); };
+      window.gtag('js', new Date());
+      window.gtag('config', gaId);
+      var s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=' + gaId;
+      document.head.appendChild(s);
+    };
+    var clearGa = function () {
+      window['ga-disable-' + gaId] = true;
+      var host = location.hostname;
+      var domains = ['', host, '.' + host, '.' + host.replace(/^www\./, '')];
+      document.cookie.split(';').forEach(function (c) {
+        var name = c.split('=')[0].trim();
+        if (!/^_ga/.test(name)) return;
+        domains.forEach(function (d) {
+          document.cookie = name + '=; Max-Age=0; path=/' + (d ? '; domain=' + d : '');
+        });
+      });
+    };
+    Array.prototype.forEach.call(consent.querySelectorAll('[data-consent]'), function (btn) {
+      btn.addEventListener('click', function () {
+        var value = btn.getAttribute('data-consent');
+        try { localStorage.setItem(CONSENT_KEY, value); } catch (e) { /* choice holds for this page only */ }
+        consent.hidden = true;
+        if (value === 'granted') loadGa(); else clearGa();
+      });
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-consent-open]'), function (btn) {
+      btn.addEventListener('click', function () {
+        consent.hidden = false;
+        consent.querySelector('[data-consent]').focus();
+      });
+    });
+    if (stored === 'granted') loadGa();
+    else if (stored !== 'denied') consent.hidden = false;
+  }
+
   // Click-to-load Google Maps (no request to Google until the visitor asks).
   Array.prototype.forEach.call(document.querySelectorAll('[data-map-src]'), function (map) {
     var controls = map.querySelector('[data-map-controls]');

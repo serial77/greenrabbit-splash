@@ -11,6 +11,12 @@ export default ({ AGE, A, HOURS, CLUB, esc }) => ({
   illustrative: 'Illustrative image',
   langLabel: 'Language',
   home: 'Home',
+  consent: {
+    label: `Cookie notice`,
+    text: `We use Google Analytics cookies to understand how many people visit this site and how it is used. They are only set if you accept.`,
+    accept: `Accept`, reject: `Reject`,
+    policy: `Cookie policy (ES)`, settings: `Cookie settings`,
+  },
   gate: {
     title: `Are you ${AGE} or over?`,
     text: `This website provides information about a private cannabis association and is intended only for adults aged ${AGE} and over.`,

@@ -4,7 +4,7 @@ import { readFile, writeFile, mkdir, rm, cp } from 'node:fs/promises';
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { dirname, join } from 'node:path';
-import { CLUB, SITE_URL, LEGAL_UPDATED, TODO } from './site.config.mjs';
+import { CLUB, SITE_URL, LEGAL_UPDATED, GA_ID, TODO } from './site.config.mjs';
 import es from './src/i18n/es.mjs';
 import en from './src/i18n/en.mjs';
 import fr from './src/i18n/fr.mjs';
@@ -222,6 +222,7 @@ ${hreflang}
 ${heroPreload}
 <style>${CSS}</style>
 <meta name="theme-color" content="#f8f6f1">
+<meta name="google-site-verification" content="6pi-LSTMxp7Pk1SHpfEjRtMOBicBlpMWfbUPGUcPa4o">
 <link rel="icon" href="${asset('/favicon.ico')}" sizes="48x48">
 <link rel="icon" href="${asset('/favicon-32.png')}" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="${asset('/apple-touch-icon.png')}">
@@ -316,10 +317,25 @@ function footer(t) {
 <p class="note footer-note">${f.note}</p>
 <div class="footer-bottom">
 <p>© ${YEAR} ${CLUB.legalName}. ${f.rights}</p>
-<ul>${f.legal.map(([href, label]) => `<li><a href="${href}">${label}</a></li>`).join('')}</ul>
+<ul>${f.legal.map(([href, label]) => `<li><a href="${href}">${label}</a></li>`).join('')}${GA_ID ? `<li><button class="link-btn" type="button" data-consent-open>${t.consent.settings}</button></li>` : ''}</ul>
 </div>
 </div>
-</footer>`;
+</footer>
+${consentBanner(t)}`;
+}
+
+// Analytics consent (LSSI art. 22.2): nothing is loaded from Google until the
+// visitor accepts. site.js shows the banner when no choice is stored.
+function consentBanner(t) {
+  if (!GA_ID) return '';
+  const c = t.consent;
+  return `<section class="consent" id="consent" aria-label="${esc(c.label)}" data-ga-id="${GA_ID}" hidden>
+<p>${c.text} <a href="/cookies/">${c.policy}</a></p>
+<div class="consent-actions">
+<button class="btn btn-secondary" type="button" data-consent="denied">${c.reject}</button>
+<button class="btn btn-secondary" type="button" data-consent="granted">${c.accept}</button>
+</div>
+</section>`;
 }
 
 function ageGate(t) {
@@ -603,10 +619,11 @@ ${OWNER_DL}
 <h2>1. Responsable del tratamiento</h2>
 ${OWNER_DL}
 <h2>2. Datos que tratamos</h2>
-<p>Este sitio no tiene formularios, no crea cuentas de usuario y no utiliza herramientas de analítica ni de publicidad. Solo tratamos datos personales en estos casos:</p>
+<p>Este sitio no tiene formularios, no crea cuentas de usuario y no utiliza herramientas de publicidad. Solo tratamos datos personales en estos casos:</p>
 <ul>
 <li><strong>Contacto:</strong> si nos escribes por correo electrónico (gestionado con Gmail / Google Workspace), WhatsApp o nos llamas, tratamos tus datos de contacto y el contenido de tu mensaje para responderte. Base jurídica: tu consentimiento y, en su caso, la aplicación de medidas precontractuales a petición tuya (art. 6.1.a y 6.1.b RGPD).</li>
 <li><strong>Registros técnicos del servidor:</strong> el proveedor de alojamiento registra de forma automática datos técnicos como la dirección IP, el navegador y la fecha de acceso, con fines de seguridad y funcionamiento del servicio. Base jurídica: interés legítimo (art. 6.1.f RGPD).</li>
+<li><strong>Analítica web (Google Analytics):</strong> solo si aceptas las cookies de analítica en el aviso de cookies, medimos de forma agregada cuántas personas visitan el sitio, qué páginas ven, desde qué tipo de dispositivo y de qué país o región aproximada acceden. Se utiliza un identificador seudónimo guardado en una cookie; Google Analytics 4 no registra ni almacena la dirección IP completa. Base jurídica: tu consentimiento (art. 6.1.a RGPD), que puedes retirar en cualquier momento desde «Configurar cookies», al pie de cada página.</li>
 <li><strong>Mapa de Google:</strong> solo si pulsas «Cargar Google Maps» se conecta tu navegador con Google, que tratará tus datos según su propia política. Base jurídica: tu consentimiento, expresado al pulsar el botón.</li>
 </ul>
 <p>Los datos de las solicitudes de admisión de socios se recogen de forma presencial en la sede de la asociación, donde se facilita la información sobre protección de datos correspondiente. No se recogen a través de este sitio web.</p>
@@ -615,11 +632,12 @@ ${OWNER_DL}
 <ul>
 <li>Vercel Inc. (alojamiento web), con sede en EE. UU., con garantías adecuadas para las transferencias internacionales (cláusulas contractuales tipo de la Comisión Europea y/o Marco de Privacidad de Datos UE-EE. UU.).</li>
 <li>Google Ireland Ltd. – Gmail / Google Workspace (servicio de correo electrónico): trata los mensajes que nos envías a ${CLUB.email} y nuestras respuestas.</li>
+<li>Google Ireland Ltd. – Google Analytics: solo si aceptas las cookies de analítica. Google puede transferir datos a EE. UU. al amparo del Marco de Privacidad de Datos UE-EE. UU. y de cláusulas contractuales tipo.</li>
 <li>Google Ireland Ltd. – Google Maps: solo si pulsas «Cargar Google Maps».</li>
 <li>WhatsApp Ireland Ltd., solo si decides contactarnos por WhatsApp.</li>
 </ul>
 <h2>4. Conservación</h2>
-<p>Conservamos los datos de contacto el tiempo necesario para atender tu consulta y, después, durante los plazos legales de prescripción de posibles responsabilidades. Los registros técnicos se conservan el tiempo que fija el proveedor de alojamiento por motivos de seguridad.</p>
+<p>Conservamos los datos de contacto el tiempo necesario para atender tu consulta y, después, durante los plazos legales de prescripción de posibles responsabilidades. Los registros técnicos se conservan el tiempo que fija el proveedor de alojamiento por motivos de seguridad. Los datos de analítica se conservan un máximo de 14 meses.</p>
 <h2>5. Tus derechos</h2>
 <p>Puedes ejercer tus derechos de acceso, rectificación, supresión, oposición, limitación del tratamiento y portabilidad, así como retirar tu consentimiento en cualquier momento, escribiendo a <a href="mailto:${CLUB.email}">${CLUB.email}</a> e indicando el derecho que deseas ejercer. Podremos pedirte que acredites tu identidad.</p>
 <p>Si consideras que no hemos tratado tus datos correctamente, puedes presentar una reclamación ante la Agencia Española de Protección de Datos (<a href="https://www.aepd.es" rel="noopener" target="_blank">www.aepd.es</a>).</p>
@@ -629,19 +647,27 @@ ${OWNER_DL}
   {
     path: '/cookies/',
     title: 'Política de cookies | Green Rabbit Calpe',
-    description: `Política de cookies de ${CLUB.brandName}: este sitio no instala cookies propias, de analítica ni de publicidad. El mapa de Google solo se carga si lo pides.`,
+    description: `Política de cookies de ${CLUB.brandName}: solo usamos cookies de analítica (Google Analytics) si las aceptas. Sin publicidad. El mapa de Google solo se carga si lo pides.`,
     h1: 'Política de cookies',
     body: `<p>Esta política informa sobre el uso de cookies y tecnologías similares en greenrabbit.es, conforme al artículo 22.2 de la LSSI-CE.</p>
 <h2>1. En resumen</h2>
-<p><strong>Este sitio no instala cookies propias ni utiliza cookies de analítica, de publicidad ni de redes sociales.</strong> Por eso no mostramos un banner de cookies.</p>
+<p><strong>Solo utilizamos cookies de analítica (Google Analytics), y únicamente si las aceptas en el aviso de cookies.</strong> No usamos cookies de publicidad ni de redes sociales. Si las rechazas o no respondes, no se carga Google Analytics ni se establece ninguna conexión con Google para la analítica.</p>
+<p>Puedes cambiar tu elección cuando quieras con el enlace «Configurar cookies», al pie de cada página.</p>
 <h2>2. Almacenamiento local técnico</h2>
-<p>Cuando confirmas que tienes ${AGE} años o más, tu navegador guarda esa respuesta en su almacenamiento local (<code>localStorage</code>, clave <code>gr-age-ok</code>) para no volver a preguntarte. No es una cookie, no se envía a ningún servidor y no sirve para identificarte. Es un almacenamiento estrictamente necesario para la función que has solicitado, por lo que está exento de consentimiento. Puedes borrarlo en cualquier momento desde la configuración de tu navegador (datos de sitios web).</p>
-<h2>3. Mapa de Google (solo si lo cargas)</h2>
+<p>Cuando confirmas que tienes ${AGE} años o más, tu navegador guarda esa respuesta en su almacenamiento local (<code>localStorage</code>, clave <code>gr-age-ok</code>) para no volver a preguntarte. Del mismo modo, tu respuesta al aviso de cookies se guarda con la clave <code>gr-consent</code>. No son cookies, no se envían a ningún servidor y no sirven para identificarte. Es un almacenamiento estrictamente necesario para las funciones que has solicitado, por lo que está exento de consentimiento. Puedes borrarlo en cualquier momento desde la configuración de tu navegador (datos de sitios web).</p>
+<h2>3. Cookies de analítica (solo si las aceptas)</h2>
+<p>Usamos Google Analytics 4, un servicio de Google Ireland Ltd., para saber de forma agregada cuántas personas visitan el sitio y cómo lo usan. Con tu consentimiento se instalan estas cookies:</p>
+<ul>
+<li><code>_ga</code>: distingue a los visitantes mediante un identificador aleatorio. Titular: Google (cookie de analítica instalada en nuestro dominio). Duración: 2 años.</li>
+<li><code>_ga_J04D11YX9M</code>: mantiene el estado de la sesión. Titular: Google. Duración: 2 años.</li>
+</ul>
+<p>Más información sobre cómo usa Google estos datos en <a href="https://policies.google.com/technologies/partner-sites?hl=es" rel="noopener" target="_blank">policies.google.com</a>. Si retiras tu consentimiento, dejamos de cargar Google Analytics y eliminamos estas cookies de tu navegador.</p>
+<h2>4. Mapa de Google (solo si lo cargas)</h2>
 <p>En la sección de ubicación mostramos una imagen estática del mapa. El mapa interactivo de Google Maps solo se carga si pulsas el botón «Cargar Google Maps». A partir de ese momento, Google puede instalar cookies y tecnologías similares bajo su responsabilidad. Puedes consultar su política en <a href="https://policies.google.com/technologies/cookies?hl=es" rel="noopener" target="_blank">policies.google.com</a>. Si no pulsas el botón, no se realiza ninguna conexión con Google.</p>
-<h2>4. Enlaces externos</h2>
+<h2>5. Enlaces externos</h2>
 <p>Los enlaces a Instagram, TikTok, WhatsApp y Google Maps te llevan a sitios de terceros, que aplican sus propias políticas de cookies.</p>
-<h2>5. Cambios</h2>
-<p>Si en el futuro incorporamos cookies que requieran tu consentimiento, actualizaremos esta política y te lo solicitaremos antes de instalarlas.</p>`,
+<h2>6. Cambios</h2>
+<p>Si en el futuro incorporamos otras cookies que requieran tu consentimiento, actualizaremos esta política y te lo solicitaremos antes de instalarlas.</p>`,
   },
 ];
 

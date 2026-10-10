@@ -601,6 +601,23 @@ address { font-style: normal; }
   .lockup { margin-top: -.6rem; }
 }
 
+.link-btn {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 0; border: 0; background: none;
+  font: inherit; color: var(--charcoal); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; cursor: pointer;
+}
+.link-btn:hover { text-decoration-thickness: 2px; }
+
+/* ---------- analytics consent banner (hidden while the age gate is open) ---------- */
+.consent {
+  position: fixed; z-index: 900; inset-inline: 1rem; bottom: max(1rem, env(safe-area-inset-bottom));
+  max-width: 34rem; margin-inline: auto; padding: 1rem 1.25rem;
+  background: var(--warm-white); border: 1px solid var(--border); border-radius: var(--radius);
+  box-shadow: 0 20px 50px -20px rgba(41, 42, 39, .45);
+}
+.consent[hidden], .age-pending .consent { display: none; }
+.consent p { margin: 0 0 .85rem; font-size: .9375rem; line-height: 1.55; color: var(--warm-gray); }
+.consent-actions { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
+
 /* ---------- age gate: overlay only; content stays rendered beneath and in the DOM ---------- */
 .age-gate { display: none; }
 .age-pending .age-gate {

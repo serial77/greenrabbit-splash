@@ -11,6 +11,12 @@ export default ({ AGE, A, HOURS, CLUB, esc }) => ({
   illustrative: `Image illustrative`,
   langLabel: `Langue`,
   home: `Accueil`,
+  consent: {
+    label: `Avis sur les cookies`,
+    text: `Nous utilisons les cookies de Google Analytics pour savoir combien de personnes visitent ce site et comment il est utilisé. Ils ne sont déposés que si vous les acceptez.`,
+    accept: `Accepter`, reject: `Refuser`,
+    policy: `Politique de cookies (ES)`, settings: `Paramètres des cookies`,
+  },
   gate: {
     title: `Avez-vous ${AGE} ans ou plus ?`,
     text: `Ce site présente une association cannabique privée et s’adresse exclusivement aux personnes de ${AGE} ans et plus.`,
